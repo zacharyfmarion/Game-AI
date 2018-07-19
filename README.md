@@ -6,6 +6,14 @@ This repository represents my attempts to replicate different AI algorithms to s
 
 Testing is done with `pytest`. Simply run the command `pytest` to run all tests.
 
+## Roadmap
+
+- [ ] Add Othello as a game
+- [ ] Add Chess as a game
+- [ ] Add Monte Carlo Tree Search
+- [ ] Add a simple RL agent
+- [ ] Add an alphazero agent
+
 ## Contribution
 
 Feel free to open an issue / submit a PR!
