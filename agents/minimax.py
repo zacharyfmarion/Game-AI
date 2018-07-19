@@ -1,4 +1,4 @@
-from lib.agent import Agent
+from core.agent import Agent
 
 class MinimaxAgent(Agent):
   def action(self, g, s, p):

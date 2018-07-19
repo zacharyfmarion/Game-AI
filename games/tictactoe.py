@@ -1,5 +1,5 @@
 import math
-from lib.game import Game
+from core.game import Game
 
 class TicTacToe(Game):
   def initial_state(self):
