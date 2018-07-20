@@ -1,7 +1,7 @@
 class Game:
   def initial_state(self):
     '''
-    Return the initial state of the game and the starting player (state, player)
+    Return the initial state of the game
     '''
     raise NotImplementedError
 
@@ -25,7 +25,7 @@ class Game:
   
   def next_state(self, s, a, p):
     '''
-    Given a state, action, and player, return the state resulting from the 
+    Given a state, action, and player id, return the state resulting from the 
     player making that move
     '''
     raise NotImplementedError

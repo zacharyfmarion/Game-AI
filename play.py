@@ -1,14 +1,19 @@
 from games.tictactoe import TicTacToe
 from agents.minimax import MinimaxAgent
+from agents.human import HumanAgent
+from agents.random import RandomAgent
 
-# Inititalize our game, state, and current player
+# Inititalize our game and agents
 game = TicTacToe()
-agent = MinimaxAgent()
-state, player = game.initial_state()
+agent1 = RandomAgent(0)
+agent2 = MinimaxAgent(1)
+
+state = game.initial_state()
+curr_agent = agent1
 
 # Play out the full game
 while not game.terminal(state):
-  action = agent.action(game, state, player)
-  state[action] = player
+  action = curr_agent.action(game, state)
+  state[action] = int(curr_agent)
   print(game.to_string(state), "\n")
-  player = 1 - player
+  curr_agent = agent2 if curr_agent == agent1 else agent1
