@@ -22,7 +22,7 @@ class Game:
     Returns the reward for a given state 
     '''
     raise NotImplementedError
-  
+
   def next_state(self, s, a, p):
     '''
     Given a state, action, and player id, return the state resulting from the 

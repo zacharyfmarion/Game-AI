@@ -1,12 +1,11 @@
 from games.tictactoe import TicTacToe
-from agents.minimax import MinimaxAgent
-from agents.human import HumanAgent
+from agents.limited_depth_minimax import LimitedDepthMinimaxAgent
 from agents.random import RandomAgent
 
 # Inititalize our game and agents
 game = TicTacToe()
 agent1 = RandomAgent(0)
-agent2 = MinimaxAgent(1)
+agent2 = LimitedDepthMinimaxAgent(1)
 
 state = game.initial_state()
 curr_agent = agent1
