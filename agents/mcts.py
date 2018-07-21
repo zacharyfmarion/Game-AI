@@ -5,10 +5,11 @@ import sys
 from core.agent import Agent
 from games.tictactoe import TicTacToe
 
-# Here's the idea: I want to learn how to play tic tac toe
-# by keeping track of the best action in any state. I will
-# do this by propagating whether or not I won the game back
-# up through the game history
+# Here's the idea: we want to learn how to play tic tac toe by keeping track 
+# of the best action in any state. We will do this by propagating whether or 
+# not the current player won the game back up through the game history. After
+# enough iterations of game simulations we can choose the best move based on
+# this stored information
 
 class MCTSAgent(Agent):
   
