@@ -1,5 +1,5 @@
 import numpy as np
-import random
+from random import choice
 import sys
 
 from core.agent import Agent
@@ -12,7 +12,7 @@ from games.tictactoe import TicTacToe
 # this stored information
 
 class MCTSAgent(Agent):
-  
+
   def __init__(self, id, **kwargs):
     Agent.__init__(self, id)
     self.wins = {}
@@ -22,7 +22,7 @@ class MCTSAgent(Agent):
     '''
     Given the state and player return the best action. Note that the player is
     the player that is about to play, so we use the opposite player when self.plays
-    and self.wins for the next_state
+    and self.wins for the next_state.
     '''
     actions = g.action_space(s)
     next_state_hashes = [g.to_hash(g.next_state(s, a, p)) for a in actions]
@@ -30,17 +30,47 @@ class MCTSAgent(Agent):
 
     # We first check that this player has been in each of the subsequent states
     # If they have not, then we simply choose a random action
-
     if all((1-p, s_hash) in self.plays for s_hash in next_state_hashes):
+
       q_values = [self.wins[(1-p, s_hash)] / self.plays[(1-p, s_hash)] \
                   for s_hash in next_state_hashes]
-      print(q_values)
+
       # We want to minimize the q-value of our opponent, so we return the action
       # that yeilds the least amount of wins to the other player
       best_move_index = q_values.index(min(q_values))
       best_move = actions[best_move_index]
     else:
-      best_move = random.choice(actions)
+      best_move = choice(actions)
+
+    return best_move
+
+  def monte_carlo_action(self, g, s, p):
+    '''
+    Choose an action during self play based on the UCB1 algorithm. Instead of just
+    choosing the action that led to the most wins in the past, we choose the action
+    that balances this concern with exploration
+    '''
+    actions = g.action_space(s)
+    next_state_hashes = [g.to_hash(g.next_state(s, a, p)) for a in actions]
+    best_move = None
+
+    # We first check that this player has been in each of the subsequent states
+    # If they have not, then we simply choose a random action
+    if all((1-p, s_hash) in self.plays for s_hash in next_state_hashes):
+
+      log_total = math.log(sum(self.plays[(p, s_hash)] for s_hash in next_state_hashes))
+      values = [
+        (self.wins[(p, s_hash)] / self.plays[(p, s_hash)]) +
+        self.C * math.sqrt(log_total / self.plays[(p, s_hash)])
+        for s_hash in next_state_hashes
+      ]
+
+      # We want to minimize the q-value of our opponent, so we return the action
+      # that yeilds the least amount of wins to the other player
+      next_move_index = values.index(max(values))
+      best_move = actions[next_move_index]
+    else:
+      best_move = choice(actions)
 
     return best_move
   
@@ -66,11 +96,17 @@ class MCTSAgent(Agent):
     p = 0
     s = g.initial_state()
     while True:
-      a = self.action(g, s, p)
+      a = self.monte_carlo_action(g, s, p)
       s = g.next_state(s, a, p)
       print(g.to_readable_string(s), '\n')
       if g.terminal(s): break
       p = 1 - p
+
+  def get_trained_params(self):
+    '''
+    Return the params that we learned through self play
+    '''
+    return (self.plays, self.wins)
   
   def play_game(self, g):
     '''
@@ -86,10 +122,8 @@ class MCTSAgent(Agent):
     while True:
       # Update visited with the next state
       visited.append((p, g.to_hash(s)))
-      actions = g.action_space(s)
-      action = random.choice(actions)
-      next_state = g.next_state(s, action, p)
-      s = next_state
+      a = choice(g.action_space(s))
+      s = g.next_state(s, a, p)
       p = 1 - p
       if g.terminal(s): break
     
