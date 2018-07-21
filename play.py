@@ -14,5 +14,5 @@ curr_agent = agent1
 while not game.terminal(state):
   action = curr_agent.action(game, state)
   state[action] = int(curr_agent)
-  print(game.to_string(state), "\n")
+  print(game.to_readable_string(state), "\n")
   curr_agent = agent2 if curr_agent == agent1 else agent1

@@ -11,6 +11,11 @@ class TicTacToe(Game):
   def terminal(self, s):
     return self.is_winner(s, 0) or self.is_winner(s, 1) or len(self.action_space(s)) == 0 
 
+  def winner(self, s):
+    if self.is_winner(s, 0): return 0
+    if self.is_winner(s, 1): return 1
+    return -1
+
   def reward(self, s, p):
     if self.is_winner(s, p): return 1
     if self.is_winner(s, 1-p): return -1
@@ -25,13 +30,16 @@ class TicTacToe(Game):
     copy[a] = p
     return copy
 
-  def to_string(self, s):
+  def to_readable_string(self, s):
     board = ""
     for i, player in enumerate(s):
         end_of_line = (i + 1) % math.sqrt(len(s)) != 0
         row_line = "\n-----------\n" if i != len(s) - 1 else ""
         board += " {} {}".format(self.stringify_player(player), "|" if end_of_line else row_line)
     return board
+  
+  def to_hash(self, s):
+    return hash(tuple(s))
 
   def is_winner(self, s, p):
     '''

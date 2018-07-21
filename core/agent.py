@@ -12,7 +12,7 @@ class Agent:
     '''
     Train an agent. Only relevant for some agents
     '''
-    print('Training not implemnted for this agent')
+    print('Training not implmented for this agent')
   
   def __int__(self):
     '''

@@ -17,6 +17,12 @@ class Game:
     '''
     raise NotImplementedError
 
+  def winner(self, s, p):
+    '''
+    Returns the winner of a game, or -1 if there is no winner
+    '''
+    raise NotImplementedError
+
   def reward(self, s, p):
     '''
     Returns the reward for a given state 
@@ -30,8 +36,15 @@ class Game:
     '''
     raise NotImplementedError
 
-  def to_string(self, s):
+  def to_readable_string(self, s):
     '''
-    Returns a string representation of the board
+    Returns a pretty-formatted representation of the board
     '''
     return str(s)
+  
+  def to_hash(self, s):
+    '''
+    Returns a hash of the game state, which is necessary for some algorithms 
+    such as MCTS
+    '''
+    return hash(str(s))
