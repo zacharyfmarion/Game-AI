@@ -1,7 +1,7 @@
 from core.agent import Agent
 
 class MinimaxAgent(Agent):
-  def action(self, g, s):
+  def action(self, g, s, p):
     actions = g.action_space(s)
     rewards = [self.min_play(g, g.next_state(s, a, self.id)) for a in actions]
     return actions[rewards.index(max(rewards))]

@@ -36,7 +36,7 @@ class Arena:
 
     # Play out the full game
     while not self.game.terminal(state):
-      action = self.agents[player].action(self.game, state)
+      action = self.agents[player].action(self.game, state, player)
       state[action] = player
       if verbose:
         print(self.game.to_readable_string(state), "\n")
