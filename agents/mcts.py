@@ -2,7 +2,7 @@ import numpy as np
 from random import choice
 import sys
 
-from core.agent import Agent
+from core.trainable_agent import TrainableAgent
 from games.tictactoe import TicTacToe
 
 # Here's the idea: we want to learn how to play tic tac toe by keeping track 
@@ -25,6 +25,10 @@ class MCTSAgent(Agent):
     and self.wins for the next_state.
     '''
     actions = g.action_space(s)
+
+    # Stop out early if there is only one choice
+    if len(actions) == 1: return actions[0]
+
     next_state_hashes = [g.to_hash(g.next_state(s, a, p)) for a in actions]
     best_move = None
 
@@ -51,6 +55,10 @@ class MCTSAgent(Agent):
     that balances this concern with exploration
     '''
     actions = g.action_space(s)
+
+    # Stop out early if there is only one choice
+    if len(actions) == 1: return actions[0]
+
     next_state_hashes = [g.to_hash(g.next_state(s, a, p)) for a in actions]
     best_move = None
 
@@ -74,7 +82,7 @@ class MCTSAgent(Agent):
 
     return best_move
   
-  def train(self, g, num_games=100000):
+  def train(self, g, num_games=10000):
     '''
     Play out a certain number of games, each time updating our win and play
     counts for any state that we visit during the game. As we continue to
@@ -88,20 +96,6 @@ class MCTSAgent(Agent):
     for p, s in self.plays.keys():
       print("{}, {}: {}".format(p, s, self.wins[(p, s)] / self.plays[(p, s)]))
   
-  def play_game_with_policy(self, g):
-    '''
-    After some simulations we attempt to play a game using our policy, 
-    assuming that all actions have been visited from a given state
-    '''
-    p = 0
-    s = g.initial_state()
-    while True:
-      a = self.monte_carlo_action(g, s, p)
-      s = g.next_state(s, a, p)
-      print(g.to_readable_string(s), '\n')
-      if g.terminal(s): break
-      p = 1 - p
-
   def get_trained_params(self):
     '''
     Return the params that we learned through self play
@@ -122,7 +116,7 @@ class MCTSAgent(Agent):
     while True:
       # Update visited with the next state
       visited.append((p, g.to_hash(s)))
-      a = choice(g.action_space(s))
+      a = self.monte_carlo_action(g, s, p)
       s = g.next_state(s, a, p)
       p = 1 - p
       if g.terminal(s): break
