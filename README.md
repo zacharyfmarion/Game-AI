@@ -14,6 +14,10 @@ Testing is done with `pytest`. Simply run the command `pytest` to run all tests.
 - [ ] Add a simple RL agent
 - [ ] Add an alphazero agent
 
+## Building
+
+Build the project with `python3 setup.py sdist bdist_wheel`.
+
 ## Contribution
 
 Feel free to open an issue / submit a PR!
