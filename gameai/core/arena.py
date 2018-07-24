@@ -21,13 +21,15 @@ class Arena:
     self.games_played = 0
     self.wins = [0, 0]
 
-  def play_games(self, num_games = 10):
+  def play_games(self, **kwargs):
     '''
     Play a series of games between the players, recording how they did
     so that we can display statistics on which player performed better
     '''
-    for game in range(num_games):
-      winner = self.play_game() 
+    num_episodes = kwargs.get('num_episodes', 10)
+    verbose = kwargs.get('verbose', False)
+    for game in range(num_episodes):
+      winner = self.play_game(verbose) 
       if winner in [p.id for p in self.players]: 
         self.wins[winner] += 1
 
