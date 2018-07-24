@@ -1,3 +1,5 @@
+from core.player import Player
+
 class Arena:
   '''
   Place where two agents are pitted against eachother in a series of games.
@@ -9,13 +11,13 @@ class Arena:
     The `players` argument is a list of players to be used. In the future, when 
     more than two players are supported this can be generalized to n players.
     '''
-    if not all(isinstance(p) for p in players): 
+    if not all(isinstance(p, Player) for p in players): 
        raise ValueError('Expected `model` argument to be a list of '
                         '`Player` instances, got ', players)
     if len(players) != 2: 
       raise ValueError('There should be two players in every game')
     self.game = game
-    self.agents = agents
+    self.players = players
     self.games_played = 0
     self.wins = [0, 0]
 

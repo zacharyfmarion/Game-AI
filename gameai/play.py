@@ -1,18 +1,18 @@
 # Import the game that you want to play
-from gameai.games.tictactoe import TicTacToe
+from games.tictactoe import TicTacToe
 
 # Import the agents you want to pit against eachother
-from gameai.agents.random import RandomAgent
-from gameai.agents.minimax import MinimaxAgent
-from gameai.agents.mcts import MCTSAgent
+from agents.random import RandomAgent
+from agents.minimax import MinimaxAgent
+from agents.mcts import MCTSAgent
 
 # If you are using an agent that you need to train, import
 # the trainer here
-from gameai.trainers.mcts import MCTSTrainer
+from trainers.mcts import MCTSTrainer
 
 # We need the Arena and players to pit the agents against eachother
-from gameai.core.arena import Arena
-from gameai.core.player import Player
+from core.arena import Arena
+from core.player import Player
 
 # Create our game
 game = TicTacToe()

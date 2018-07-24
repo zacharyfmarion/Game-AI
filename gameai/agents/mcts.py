@@ -12,8 +12,7 @@ from games.tictactoe import TicTacToe
 
 class MCTSAgent(Agent):
 
-  def __init__(self, id, **kwargs):
-    Agent.__init__(self, id)
+  def __init__(self, **kwargs):
     self.wins = kwargs.get('plays', {})
     self.plays = kwargs.get('wins', {})
   
