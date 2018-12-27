@@ -1,3 +1,5 @@
+# Game AI: Your starting point for AI research
+
 Welcome to gameai! This package conatains a series of well-defined abstractions that are common in AI, such as a games, agents, and trainers which optimize the behavior of agents. As long as a class inherits from the bas implemetation of a primitive (e.g. `Agent`) and implements the required methods, it can be used in place of the standard implementations given. To get started:
 
 ```python
