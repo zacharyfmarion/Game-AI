@@ -21,16 +21,16 @@ def play():
     # First train the mcts agent
     print("Training agent...\n")
     trainer = MCTSTrainer()
-    plays, wins = trainer.train(game, verbose=True, num_episodes=100000)
+    plays, wins = trainer.train(game, verbose=True, num_episodes=10000)
 
     # Inititalize our agents
     print("\nPitting agents...\n")
-    player1 = Player(0, MCTSAgent(plays=plays, wins=wins))
-    player2 = Player(1, RandomAgent())
+    player0 = Player(0, MCTSAgent(plays=plays, wins=wins))
+    player1 = Player(1, RandomAgent())
 
     # Pit the agents against eachother in the arena. Note that the player
     # ids passed in need to match the index of the player in the array
-    arena = Arena(game, [player1, player2])
+    arena = Arena(game, [player0, player1])
     arena.play_games(verbose=True)
     arena.statistics()
 

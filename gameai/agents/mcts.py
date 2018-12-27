@@ -2,14 +2,15 @@ from random import choice
 
 from core.agent import Agent
 
-# Here's the idea: we want to learn how to play tic tac toe by keeping track
-# of the best action in any state. We will do this by propagating whether or
-# not the current player won the game back up through the game history. After
-# enough iterations of game simulations we can choose the best move based on
-# this stored information
-
 
 class MCTSAgent(Agent):
+    '''
+    Here's the idea: we want to learn how to play a game by keeping track
+    of the best action in any state. We will do this by propagating whether or
+    not the current player won the game back up through the game history. After
+    enough iterations of game simulations we can choose the best move based on
+    this stored information
+    '''
 
     def __init__(self, **kwargs):
         self.wins = kwargs.get('plays', {})
@@ -27,8 +28,9 @@ class MCTSAgent(Agent):
         if len(actions) == 1:
             return actions[0]
 
-        next_state_hashes = [g.to_hash(g.next_state(s, a, p)) for a in actions]
         best_move = None
+        next_state_hashes = [
+            g.to_hash(g.next_state(s, a, p)) for a in actions]
 
         # We first check that this player has been in each of the subsequent states
         # If they have not, then we simply choose a random action
