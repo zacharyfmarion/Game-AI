@@ -1,17 +1,15 @@
 # Import the game that you want to play
-from games.tictactoe import TicTacToe
+from games import TicTacToe
 
 # Import the agents you want to pit against eachother
-from agents.random import RandomAgent
-from agents.mcts import MCTSAgent
+from agents import RandomAgent, MCTSAgent
 
 # If you are using an agent that you need to train, import
 # the trainer here
-from trainers.mcts import MCTSTrainer
+from trainers import MCTSTrainer
 
 # We need the Arena and players to pit the agents against eachother
-from core.arena import Arena
-from core.player import Player
+from core import Arena, Player
 
 
 def play():
@@ -20,7 +18,7 @@ def play():
 
     # First train the mcts agent
     print("Training agent...\n")
-    trainer = MCTSTrainer(verbose=True, num_episodes=10000)
+    trainer = MCTSTrainer(verbose=True, num_iters=10000, num_episodes=100)
     plays, wins = trainer.train(game)
 
     # Inititalize our agents
