@@ -1,12 +1,6 @@
-# Import the game that you want to play
-from games.tictactoe import TicTacToe
-
-# Import the agents you want to pit against eachother
-from agents.minimax import MinimaxAgent
-
-# We need the Arena and players to pit the agents against eachother
-from core.arena import Arena
-from core.player import Player
+from gameai.games import TicTacToe
+from gameai.agents import MinimaxAgent
+from gameai.core import Arena, Player
 
 
 def play():
@@ -21,7 +15,8 @@ def play():
     # Pit the agents against eachother in the arena. Note that the player
     # ids passed in need to match the index of the player in the array
     arena = Arena(game, [player1, player2])
-    arena.play_game(verbose=True)
+    arena.play_games(verbose=True)
+    arena.statistics()
 
 
 if __name__ == '__main__':
