@@ -16,11 +16,11 @@ Build the project with `python3 setup.py sdist bdist_wheel`.
 
 ## Roadmap
 
+- [x] Add Monte Carlo Tree Search
 - [ ] Add Othello as a game
 - [ ] Add Chess as a game
-- [ ] Add Monte Carlo Tree Search
-- [ ] Add a simple RL agent
-- [ ] Add an alphazero agent
+- [ ] Add a simple RL agent & trainer
+- [ ] Add an alphazero agent & trainer
 
 ## Contribution
 

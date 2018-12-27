@@ -20,8 +20,8 @@ def play():
 
     # First train the mcts agent
     print("Training agent...\n")
-    trainer = MCTSTrainer()
-    plays, wins = trainer.train(game, verbose=True, num_episodes=10000)
+    trainer = MCTSTrainer(verbose=True, num_episodes=10000)
+    plays, wins = trainer.train(game)
 
     # Inititalize our agents
     print("\nPitting agents...\n")

@@ -3,6 +3,7 @@ from random import choice
 from tqdm import tqdm
 
 from core.trainer import Trainer
+from .utils import assign_rewards
 
 
 class MCTSTrainer(Trainer):
@@ -10,6 +11,9 @@ class MCTSTrainer(Trainer):
     def __init__(self, **kwargs):
         self.wins = {}
         self.plays = {}
+        self.num_iters = kwargs.get('num_iters', 100)
+        self.num_episodes = kwargs.get('num_episodes', 100)
+        self.verbose = kwargs.get('verbose', False)
         self.c_punt = kwargs.get('c_punt', 1.4)
 
     def train(self, g, **kwargs):
@@ -19,15 +23,19 @@ class MCTSTrainer(Trainer):
         play, num_wins / num_plays for a given state should begin to converge on
         the true optimality of a state
         '''
-        num_episodes = kwargs.get('num_episodes', 10000)
-        verbose = kwargs.get('verbose', False)
-        if verbose:
-            for _ in tqdm(range(num_episodes)):
-                self.train_episode(g)
+        if self.verbose:
+            for _ in tqdm(range(self.num_iters)):
+                self.train_episodes(g)
         else:
-            for _ in range(num_episodes):
-                self.train_episode(g)
+            for _ in range(self.num_iters):
+                self.train_episodes(g)
         return self.training_params(g)
+
+    def train_episodes(self, g):
+        examples = []
+        for _ in range(self.num_episodes):
+            examples += self.train_episode(g)
+        self.update(examples)
 
     def train_episode(self, g):
         '''
@@ -39,23 +47,16 @@ class MCTSTrainer(Trainer):
         '''
         s = g.initial_state()
         p = 0
-        visited = []
+        examples = []
         while True:
             # Update visited with the next state
-            visited.append((p, g.to_hash(s)))
+            examples.append([p, g.to_hash(s), None])
             a = self.monte_carlo_action(g, s, p)
             s = g.next_state(s, a, p)
             p = 1 - p
             if g.terminal(s):
-                break
-
-        winner = g.winner(s)
-
-        # Now we backpropagate the result of the game
-        for p, s in visited:
-            self.plays[(p, s)] = self.plays.get((p, s), 0) + 1
-            self.wins[(p, s)] = self.wins.get(
-                (p, s), 0) + (1 if winner == p else 0)
+                examples = assign_rewards(examples, g.winner(s))
+                return examples
 
     def monte_carlo_action(self, g, s, p):
         '''
@@ -74,24 +75,30 @@ class MCTSTrainer(Trainer):
 
         # We first check that this player has been in each of the subsequent states
         # If they have not, then we simply choose a random action
-        if all((1-p, s_hash) in self.plays for s_hash in next_state_hashes):
+        if all((p, s_hash) in self.plays for s_hash in next_state_hashes):
 
             log_total = math.log(
-                sum(self.plays[(1-p, s_hash)] for s_hash in next_state_hashes))
+                sum(self.plays[(p, s_hash)] for s_hash in next_state_hashes))
             values = [
-                (self.wins[(1-p, s_hash)] / self.plays[(1-p, s_hash)]) +
-                self.c_punt * math.sqrt(log_total / self.plays[(1-p, s_hash)])
+                (self.wins[(p, s_hash)] / self.plays[(p, s_hash)]) +
+                self.c_punt * math.sqrt(log_total / self.plays[(p, s_hash)])
                 for s_hash in next_state_hashes
             ]
 
-            # We want to minimize the q-value of our opponent, so we return the action
-            # that yeilds the least amount of wins to the other player
-            next_move_index = values.index(min(values))
+            next_move_index = values.index(max(values))
             best_move = actions[next_move_index]
         else:
             best_move = choice(actions)
 
         return best_move
+
+    def update(self, examples):
+        '''
+        Backpropagate the result of the training episodes
+        '''
+        for [p, s, reward] in examples:
+            self.plays[(p, s)] = self.plays.get((p, s), 0) + 1
+            self.wins[(p, s)] = self.wins.get((p, s), 0) + reward
 
     def training_params(self, _):
         '''

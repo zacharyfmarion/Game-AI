@@ -16,7 +16,7 @@ class Trainer:
 
     def train_episode(self, g):
         '''
-        Single training episode
+        Single training iteration
         '''
         raise NotImplementedError
 
