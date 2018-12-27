@@ -2,7 +2,7 @@ import math
 from random import choice
 from tqdm import tqdm
 
-from core.trainer import Trainer
+from .trainer import Trainer
 from .utils import assign_rewards
 
 

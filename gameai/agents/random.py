@@ -1,6 +1,6 @@
 from random import choice
 
-from core.agent import Agent
+from .agent import Agent
 
 
 class RandomAgent(Agent):

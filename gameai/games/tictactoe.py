@@ -1,5 +1,5 @@
 import math
-from core.game import Game
+from .game import Game
 
 
 class TicTacToe(Game):
