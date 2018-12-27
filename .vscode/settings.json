@@ -1,0 +1,6 @@
+{
+  "files.exclude": {
+    "**/__pycache__": true
+  },
+  "python.pythonPath": "/Users/RETINA/envs/game-ai/bin/python"
+}
