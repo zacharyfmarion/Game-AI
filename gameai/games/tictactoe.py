@@ -3,6 +3,12 @@ from .game import Game
 
 
 class TicTacToe(Game):
+    '''
+    Implements a 3x3 game of tictactoe, with state represented as an array of length 9.
+    Currently the implementation is somewhat brittle and cannot be extended to an nxn
+    board easily.
+    '''
+
     def initial_state(self):
         return [-1 for i in range(9)]
 

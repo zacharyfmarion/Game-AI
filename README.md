@@ -2,7 +2,7 @@
 
 > NOTE: This is still a work in progress and the API might change significantly before a stable release. Use at your own risk.
 
-Welcome to gameai! This package conatains a series of well-defined abstractions that are common in AI, such as a games, agents, and trainers which optimize the behavior of agents. As long as a class inherits from the bas implemetation of a primitive (e.g. `Agent`) and implements the required methods, it can be used in place of the standard implementations given. To get started:
+Welcome to gameai! This package contains a series of well-defined abstractions that are common in AI, such as a games, agents, and trainers which optimize the behavior of agents. As long as a class inherits from the base implemetation of a primitive (e.g. `Agent`) and implements the required methods, it can be used in place of the standard implementations given. To get started:
 
 ```python
 from gameai.games import TicTacToe
