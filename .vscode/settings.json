@@ -1,6 +1,10 @@
 {
   "files.exclude": {
-    "**/__pycache__": true
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/build": true,
+    "**/dist": true,
+    "**/gameai.egg-info": true
   },
   "python.pythonPath": "/Users/RETINA/envs/game-ai/bin/python"
 }

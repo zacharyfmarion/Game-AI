@@ -10,11 +10,11 @@ DEFAULT_C_PUNT = 1.4
 
 class MCTSAgent(TrainableAgent):
     '''
-    Here's the idea: we want to learn how to play a game by keeping track
-    of the best action in any state. We will do this by propagating whether or
-    not the current player won the game back up through the game history. After
-    enough iterations of game simulations we can choose the best move based on
-    this stored information
+    Implementation of a Monte Carlo Tree Search. We want to learn how to play
+    a game by keeping track of the best action in any state. We will do this
+    by propagating whether or not the current player won the game back up through
+    the game history. After enough iterations of game simulations we can choose
+    the best move based on this stored information
     '''
 
     def __init__(self):

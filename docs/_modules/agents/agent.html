@@ -149,6 +149,12 @@
             
   <h1>Source code for agents.agent</h1><div class="highlight"><pre>
 <div class="viewcode-block" id="Agent"><a class="viewcode-back" href="../../api/agents.html#agents.Agent">[docs]</a><span></span><span class="k">class</span> <span class="nc">Agent</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    An agent class which exposes a method called action. Given a certain</span>
+<span class="sd">    state of a game and the player that is playing, the agent retuns the</span>
+<span class="sd">    best action it can find, given a certain heuristic or strategy</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
 <div class="viewcode-block" id="Agent.action"><a class="viewcode-back" href="../../api/agents.html#agents.Agent.action">[docs]</a>    <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Given a game, a state of the game, return an action</span>

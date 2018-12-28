@@ -2,10 +2,9 @@ from .agent import Agent
 
 
 class MinimaxAgent(Agent):
-    def __init__(self, **kwargs):
-        Agent.__init__(self)
-        # TODO: use this to terminate the traversal
-        self.horizon = kwargs.get('horizon', float("inf"))
+    '''
+    Implementation of minimax without alpha beta pruning
+    '''
 
     def action(self, g, s, p):
         actions = g.action_space(s)
@@ -13,7 +12,6 @@ class MinimaxAgent(Agent):
                    for a in actions]
         return actions[rewards.index(max(rewards))]
 
-    # Helpers
     def min_play(self, g, s, p):
         actions = g.action_space(s)
         if g.terminal(s):

@@ -160,11 +160,11 @@
 
 <div class="viewcode-block" id="MCTSAgent"><a class="viewcode-back" href="../../api/agents.html#agents.MCTSAgent">[docs]</a><span class="k">class</span> <span class="nc">MCTSAgent</span><span class="p">(</span><span class="n">TrainableAgent</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Here&#39;s the idea: we want to learn how to play a game by keeping track</span>
-<span class="sd">    of the best action in any state. We will do this by propagating whether or</span>
-<span class="sd">    not the current player won the game back up through the game history. After</span>
-<span class="sd">    enough iterations of game simulations we can choose the best move based on</span>
-<span class="sd">    this stored information</span>
+<span class="sd">    Implementation of a Monte Carlo Tree Search. We want to learn how to play</span>
+<span class="sd">    a game by keeping track of the best action in any state. We will do this</span>
+<span class="sd">    by propagating whether or not the current player won the game back up through</span>
+<span class="sd">    the game history. After enough iterations of game simulations we can choose</span>
+<span class="sd">    the best move based on this stored information</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

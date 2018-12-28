@@ -154,8 +154,13 @@
 
 
 <div class="viewcode-block" id="RandomAgent"><a class="viewcode-back" href="../../api/agents.html#agents.RandomAgent">[docs]</a><span class="k">class</span> <span class="nc">RandomAgent</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
-<div class="viewcode-block" id="RandomAgent.action"><a class="viewcode-back" href="../../agents.html#agents.RandomAgent.action">[docs]</a>    <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">choice</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">action_space</span><span class="p">(</span><span class="n">s</span><span class="p">))</span></div></div>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Implementation of a random agent, which simply selects a random action</span>
+<span class="sd">    from the current action space each turn</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">choice</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">action_space</span><span class="p">(</span><span class="n">s</span><span class="p">))</span></div>
 </pre></div>
 
            </div>

@@ -152,6 +152,12 @@
 
 
 <div class="viewcode-block" id="LimitedDepthMinimaxAgent"><a class="viewcode-back" href="../../api/agents.html#agents.LimitedDepthMinimaxAgent">[docs]</a><span class="k">class</span> <span class="nc">LimitedDepthMinimaxAgent</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Implementation of minimax which allows you to specify a cutoff horizon for the</span>
+<span class="sd">    search.</span>
+
+<span class="sd">    TODO: Don&#39;t really need a separate agent for this</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -160,11 +166,11 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">horizon</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;horizon&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 
-<div class="viewcode-block" id="LimitedDepthMinimaxAgent.action"><a class="viewcode-back" href="../../agents.html#agents.LimitedDepthMinimaxAgent.action">[docs]</a>    <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="n">actions</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">action_space</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
         <span class="n">rewards</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">min_play</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">next_state</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">p</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
                    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">actions</span><span class="p">[</span><span class="n">rewards</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">rewards</span><span class="p">))]</span></div>
+        <span class="k">return</span> <span class="n">actions</span><span class="p">[</span><span class="n">rewards</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">rewards</span><span class="p">))]</span>
 
     <span class="c1"># Helpers</span>
     <span class="k">def</span> <span class="nf">min_play</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">depth</span><span class="p">):</span>
