@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='gameai',
-    version='0.1.2',
+    version='0.1.3',
     description='Set of classes for playing games with agents',
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
