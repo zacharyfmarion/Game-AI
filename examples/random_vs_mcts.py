@@ -1,6 +1,6 @@
-from games import TicTacToe
-from agents import RandomAgent, MCTSAgent
-from core import Arena, Player
+from gameai.games import TicTacToe
+from gameai.agents import RandomAgent, MCTSAgent
+from gameai.core import Arena, Player
 
 
 def play():
