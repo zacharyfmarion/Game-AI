@@ -1,3 +1,5 @@
+import random
+
 from .player import Player
 
 
@@ -49,18 +51,24 @@ class Arena:
     def play_game(self, verbose=False):
         '''
         Play a single game, doing the necessary bookkeeping to maintain
-        accurate statistics and returning the winner (or -1 if no winner)
+        accurate statistics and returning the winner (or -1 if no winner).
+
+        NOTE: We always have the start with player being 0 from the persepctive
+        of the agent. Because of this we pass in a 'flip' boolean to the player
+        class in the action method, which flips the board and makes it seems as
+        though player 0 started, even if it was actually player 1
         '''
         state = self.game.initial_state()
-        player = self.players[0].player_id
+        starting_player = random.choice([p.player_id for p in self.players])
+        player = starting_player
 
         # Play out the full game
         while not self.game.terminal(state):
-            action = self.players[player].action(self.game, state)
+            action = self.players[player].action(
+                self.game, state, starting_player != 0)
             state[action] = player
             if verbose:
                 print(self.game.to_readable_string(state), "\n")
-            # TODO: Make this generalized for more than 2 players
             player = 1 - player
 
         self.games_played += 1

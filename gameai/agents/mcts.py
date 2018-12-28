@@ -13,14 +13,12 @@ class MCTSAgent(Agent):
     '''
 
     def __init__(self, **kwargs):
-        self.wins = kwargs.get('plays', {})
-        self.plays = kwargs.get('wins', {})
+        self.plays = kwargs.get('plays', {})
+        self.wins = kwargs.get('wins', {})
 
     def action(self, g, s, p):
         '''
-        Given the state and player return the best action. Note that the player is
-        the player that is about to play, so we use the opposite player when self.plays
-        and self.wins for the next_state.
+        Given the state and player return the best action. 
         '''
         actions = g.action_space(s)
 
@@ -35,13 +33,9 @@ class MCTSAgent(Agent):
         # We first check that this player has been in each of the subsequent states
         # If they have not, then we simply choose a random action
         if all((p, s_hash) in self.plays for s_hash in next_state_hashes):
-
             q_values = [self.wins[(p, s_hash)] / self.plays[(p, s_hash)]
                         for s_hash in next_state_hashes]
-
-            # We want to minimize the q-value of our opponent, so we return the action
-            # that yeilds the least amount of wins to the other player
-            best_move_index = q_values.index(min(q_values))
+            best_move_index = q_values.index(max(q_values))
             best_move = actions[best_move_index]
         else:
             best_move = choice(actions)

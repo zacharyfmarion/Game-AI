@@ -12,6 +12,13 @@ class TicTacToe(Game):
     def terminal(self, s):
         return self.is_winner(s, 0) or self.is_winner(s, 1) or len(self.action_space(s)) == 0
 
+    def flip_state(self, s):
+        def state_map(p):
+            if not p in [0, 1]:
+                return p
+            return 1 - p
+        return [state_map(p) for p in s]
+
     def winner(self, s):
         if self.is_winner(s, 0):
             return 0

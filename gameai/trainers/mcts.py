@@ -50,9 +50,9 @@ class MCTSTrainer(Trainer):
         examples = []
         while True:
             # Update visited with the next state
-            examples.append([p, g.to_hash(s), None])
             a = self.monte_carlo_action(g, s, p)
             s = g.next_state(s, a, p)
+            examples.append([p, g.to_hash(s), None])
             p = 1 - p
             if g.terminal(s):
                 examples = assign_rewards(examples, g.winner(s))

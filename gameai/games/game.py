@@ -17,6 +17,12 @@ class Game:
         '''
         raise NotImplementedError
 
+    def flip_state(self, s):
+        '''
+        Invert the state of the board so that player 0 becomes player 1
+        '''
+        raise NotImplementedError
+
     def winner(self, s):
         '''
         Returns the winner of a game, or -1 if there is no winner
