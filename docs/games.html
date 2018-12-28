@@ -1,0 +1,280 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Games &mdash; Game AI  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Agents" href="agents.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Game AI
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agents.html">Agents</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Games</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Game AI</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Games</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/games.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="games">
+<h1>Games<a class="headerlink" href="#games" title="Permalink to this headline">¶</a></h1>
+<p>Games are the environments in which two players are pitted.</p>
+<dl class="class">
+<dt id="games.Game">
+<em class="property">class </em><code class="descclassname">games.</code><code class="descname">Game</code><a class="reference internal" href="_modules/games/game.html#Game"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#games.Game" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="games.Game.action_space">
+<code class="descname">action_space</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/games/game.html#Game.action_space"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#games.Game.action_space" title="Permalink to this definition">¶</a></dt>
+<dd><p>For any given state returns a list of all possible valid actions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="games.Game.flip_state">
+<code class="descname">flip_state</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/games/game.html#Game.flip_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#games.Game.flip_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invert the state of the board so that player 0 becomes player 1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="games.Game.initial_state">
+<code class="descname">initial_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/games/game.html#Game.initial_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#games.Game.initial_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the initial state of the game</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="games.Game.next_state">
+<code class="descname">next_state</code><span class="sig-paren">(</span><em>s</em>, <em>a</em>, <em>p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/games/game.html#Game.next_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#games.Game.next_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a state, action, and player id, return the state resulting from the
+player making that move</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="games.Game.reward">
+<code class="descname">reward</code><span class="sig-paren">(</span><em>s</em>, <em>p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/games/game.html#Game.reward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#games.Game.reward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the reward for a given state</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="games.Game.terminal">
+<code class="descname">terminal</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/games/game.html#Game.terminal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#games.Game.terminal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether a given state is terminal</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="games.Game.to_hash">
+<code class="descname">to_hash</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/games/game.html#Game.to_hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#games.Game.to_hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a hash of the game state, which is necessary for some algorithms
+such as MCTS</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="games.Game.to_readable_string">
+<code class="descname">to_readable_string</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/games/game.html#Game.to_readable_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#games.Game.to_readable_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a pretty-formatted representation of the board</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="games.Game.winner">
+<code class="descname">winner</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/games/game.html#Game.winner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#games.Game.winner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the winner of a game, or -1 if there is no winner</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="games.TicTacToe">
+<em class="property">class </em><code class="descclassname">games.</code><code class="descname">TicTacToe</code><a class="reference internal" href="_modules/games/tictactoe.html#TicTacToe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#games.TicTacToe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements a 3x3 game of tictactoe, with state represented as an array of length 9.
+Currently the implementation is somewhat brittle and cannot be extended to an nxn
+board easily.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="agents.html" class="btn btn-neutral" title="Agents" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Zachary Marion
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

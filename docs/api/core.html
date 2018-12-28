@@ -1,0 +1,264 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Core &mdash; Game AI  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Agents" href="agents.html" />
+    <link rel="prev" title="Getting Started" href="../getting-started.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Game AI
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agents.html">Agents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="games.html">Games</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trainers.html">Trainers</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Game AI</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Core</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/core.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="core">
+<h1>Core<a class="headerlink" href="#core" title="Permalink to this headline">¶</a></h1>
+<p>Core contains the primitives for playing a game between two players.</p>
+<dl class="class">
+<dt id="core.Player">
+<em class="property">class </em><code class="descclassname">core.</code><code class="descname">Player</code><span class="sig-paren">(</span><em>player_id</em>, <em>agent</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/player.html#Player"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Player" title="Permalink to this definition">¶</a></dt>
+<dd><p>Player is a simple abstraction whose policy is defined by the
+agent that backs it. Agents learn the optimal play for each player,
+while players are only concerned about the optimal play for
+themselves</p>
+<dl class="method">
+<dt id="core.Player.action">
+<code class="descname">action</code><span class="sig-paren">(</span><em>g</em>, <em>s</em>, <em>flip</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/player.html#Player.action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Player.action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Take an action with the backing agent. If the starting player is
+not 0, then we invert the board so that the starting player is still
+0 from the perspective of the agent</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="core.Arena">
+<em class="property">class </em><code class="descclassname">core.</code><code class="descname">Arena</code><span class="sig-paren">(</span><em>game</em>, <em>players</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/arena.html#Arena"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Arena" title="Permalink to this definition">¶</a></dt>
+<dd><p>Place where two agents are pitted against eachother in a series of games.
+Statistics on the win rates are recorded and can be displayed.</p>
+<dl class="method">
+<dt id="core.Arena.play_game">
+<code class="descname">play_game</code><span class="sig-paren">(</span><em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/arena.html#Arena.play_game"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Arena.play_game" title="Permalink to this definition">¶</a></dt>
+<dd><p>Play a single game, doing the necessary bookkeeping to maintain
+accurate statistics and returning the winner (or -1 if no winner).</p>
+<p>NOTE: We always have the start with player being 0 from the persepctive
+of the agent. Because of this we pass in a ‘flip’ boolean to the player
+class in the action method, which flips the board and makes it seems as
+though player 0 started, even if it was actually player 1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.Arena.play_games">
+<code class="descname">play_games</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/arena.html#Arena.play_games"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Arena.play_games" title="Permalink to this definition">¶</a></dt>
+<dd><p>Play a series of games between the players, recording how they did
+so that we can display statistics on which player performed better</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.Arena.statistics">
+<code class="descname">statistics</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/arena.html#Arena.statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Arena.statistics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print out the statistics for a given series of games.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="agents.html" class="btn btn-neutral float-right" title="Agents" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../getting-started.html" class="btn btn-neutral" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Zachary Marion
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
