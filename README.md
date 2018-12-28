@@ -1,5 +1,7 @@
 # Game AI: Your starting point for AI research
 
+> NOTE: This is still a work in progress and the API might change significantly before a stable release. Use at your own risk.
+
 Welcome to gameai! This package conatains a series of well-defined abstractions that are common in AI, such as a games, agents, and trainers which optimize the behavior of agents. As long as a class inherits from the bas implemetation of a primitive (e.g. `Agent`) and implements the required methods, it can be used in place of the standard implementations given. To get started:
 
 ```python
@@ -28,8 +30,10 @@ arena.statistics()
 
 ## Installation
 
+Because this is still in alpha and under active development, it has not been released to PyPi. You can install via TestPyPi using the following command:
+
 ```bash
-pip install gameai
+pip install --index-url https://test.pypi.org/simple/ gameai
 ```
 
 ## Running locally
@@ -38,7 +42,7 @@ Clone the repository and install the neccessary dependencies with `pip install -
 
 ## Testing
 
-Testing is done with `pytest`. Simply run the command `pytest` to run all tests.
+Testing is done with `pytest`. Run the command `make test` to run all tests.
 
 ## Building
 
