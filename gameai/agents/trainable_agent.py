@@ -12,7 +12,7 @@ class TrainableAgent(Agent):
 
     def train(self, g, **kwargs):
         '''
-        Train the agent. As a convenience this should return :code:`self.training_params()`
+        Train the agent. As a convenience this should return self.training_params()
         at the end of training
         '''
         raise NotImplementedError
