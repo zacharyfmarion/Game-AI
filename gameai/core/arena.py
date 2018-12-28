@@ -1,4 +1,4 @@
-from core.player import Player
+from .player import Player
 
 
 class Arena:
