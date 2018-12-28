@@ -15,5 +15,11 @@ setup(
     url='https://github.com/zacharyfmarion/Game-AI',
     license='MIT',
     install_requires=['tqdm>=4.23.4'],
+    extras_require={
+        'tests': [
+            'pytest >= 4.0.2'],
+        'docs': [
+            'sphinx >= 1.4',
+            'sphinx_rtd_theme']},
     packages=find_packages(exclude=('tests', 'docs', 'examples'))
 )
