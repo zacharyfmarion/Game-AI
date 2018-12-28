@@ -15,5 +15,5 @@ setup(
     url='https://github.com/zacharyfmarion/Game-AI',
     license='MIT',
     install_requires=['tqdm>=4.23.4'],
-    packages=find_packages(exclude=('tests', 'docs'))
+    packages=find_packages(exclude=('tests', 'docs', 'examples'))
 )
