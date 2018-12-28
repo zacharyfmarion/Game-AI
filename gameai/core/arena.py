@@ -1,4 +1,4 @@
-import random
+from random import choice
 
 from .player import Player
 
@@ -62,7 +62,7 @@ class Arena:
         though player 0 started, even if it was actually player 1
         '''
         state = self.game.initial_state()
-        starting_player = random.choice([p.player_id for p in self.players])
+        starting_player = choice([p.player_id for p in self.players])
         player = starting_player
 
         # Play out the full game
