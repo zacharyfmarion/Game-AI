@@ -1,6 +1,9 @@
-class Trainer:
+from .agent import Agent
+
+
+class TrainableAgent(Agent):
     '''
-    Class that provides an interface for training an agent. This is necessary
+    Class that extends the functionality of a normal agent. This is necessary
     because agents are bound to a particular player, but for some algorithms
     the agent is really being trained to play optimally for both plays, so we
     have this class house the training data and then pass it into the agents
@@ -14,7 +17,7 @@ class Trainer:
         '''
         raise NotImplementedError
 
-    def train_episode(self, g):
+    def train_episode(self, g, **kwargs):
         '''
         Single training iteration
         '''
