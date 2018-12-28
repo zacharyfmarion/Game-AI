@@ -27,4 +27,3 @@ Indices and tables
    api/core.rst
    api/agents.rst
    api/games.rst
-   api/trainers.rst

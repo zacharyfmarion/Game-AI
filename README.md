@@ -5,21 +5,22 @@
 Welcome to gameai! This package contains a series of well-defined abstractions that are common in AI, such as a games, agents, and trainers which optimize the behavior of agents. As long as a class inherits from the base implemetation of a primitive (e.g. `Agent`) and implements the required methods, it can be used in place of the standard implementations given. To get started:
 
 ```python
-from gameai.games import TicTacToe
-from gameai.agents import RandomAgent, MCTSAgent
-from gameai.trainers import MCTSTrainer
-from gameai.core import Arena, Player
+from games import TicTacToe
+from agents import RandomAgent, MCTSAgent
+from core import Arena, Player
 
 # Create our game
 game = TicTacToe()
 
-# First train the mcts agent
-trainer = MCTSTrainer(verbose=True, num_iters=10000, num_episodes=100)
-plays, wins = trainer.train(game)
-
 # Inititalize our agents
-player0 = Player(0, MCTSAgent(plays=plays, wins=wins))
-player1 = Player(1, RandomAgent())
+mcts_agent = MCTSAgent()
+random_agent = RandomAgent()
+
+# We train the mcts agent
+mcts_agent.train(game, verbose=True, num_iters=10000, num_episodes=100)
+
+player0 = Player(0, mcts_agent)
+player1 = Player(1, random_agent)
 
 # Pit the agents against eachother in the arena. Note that the player
 # ids passed in need to match the index of the player in the array
