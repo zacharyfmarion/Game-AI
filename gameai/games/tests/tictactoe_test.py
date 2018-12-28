@@ -1,4 +1,4 @@
-from .tictactoe import TicTacToe
+from ..tictactoe import TicTacToe
 
 
 def test_action_space():
@@ -36,5 +36,4 @@ def test_flip_state():
     game = TicTacToe()
     state = [-1, 1, 0, 0, -1, -1, 0, -1, 1]
     result = [-1, 0, 1, 1, -1, -1, 1, -1, 0]
-    for output, expected in zip(game.flip_state(state), result):
-        assert output == expected
+    assert all([a == b for a, b in zip(game.flip_state(state), result)])

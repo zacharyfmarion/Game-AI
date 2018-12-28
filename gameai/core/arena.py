@@ -40,6 +40,9 @@ class Arena:
         '''
         Print out the statistics for a given series of games.
         '''
+        if self.games_played == 0:
+            raise ZeroDivisionError(
+                'At least one game must be played before statistics can be generated')
         for i in range(len(self.players)):
             print('Player {}: \n  - Games: {} / {}\n  - Percentage: {}%'.format(
                 i,

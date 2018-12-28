@@ -1,3 +1,5 @@
+.PHONY: docs
+
 upload:
 	rm -rf dist
 	python3 setup.py sdist bdist_wheel
@@ -5,3 +7,6 @@ upload:
 
 test:
 	python -m pytest
+
+docs:
+	sphinx-build -b html sphynx docs
