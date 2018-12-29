@@ -1,3 +1,22 @@
 .wy-nav-content {
   max-width: none;
 }
+
+.rst-content dl dd > p {
+  margin: 20px 0 !important;
+}
+
+.rst-content dl.attribute dd > p {
+  margin-bottom: 5px !important;
+}
+
+.rst-content table.docutils td,
+.rst-content table.field-list td,
+.rst-content table.docutils th,
+.rst-content table.field-list th {
+  padding: 2px 0;
+}
+
+.rst-content dl:not(.docutils) dt {
+  font-family: monospace;
+}
