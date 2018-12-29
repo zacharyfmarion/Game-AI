@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>agents.mcts &mdash; Game AI  documentation</title>
+  <title>algorithms.mcts &mdash; Game AI  documentation</title>
   
 
   
@@ -86,6 +86,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api/core.html">Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/agents.html">Agents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/games.html">Games</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/algorithms.html">Algorithms</a></li>
 </ul>
 
             
@@ -133,7 +134,7 @@
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
-      <li>agents.mcts</li>
+      <li>algorithms.mcts</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -148,18 +149,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for agents.mcts</h1><div class="highlight"><pre>
+  <h1>Source code for algorithms.mcts</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">choice</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="k">import</span> <span class="n">tqdm</span>
 
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">assign_rewards</span>
-<span class="kn">from</span> <span class="nn">.trainable_agent</span> <span class="k">import</span> <span class="n">TrainableAgent</span>
 
 <span class="n">DEFAULT_C_PUNT</span> <span class="o">=</span> <span class="mf">1.4</span>
 
 
-<div class="viewcode-block" id="MCTSAgent"><a class="viewcode-back" href="../../api/agents.html#agents.MCTSAgent">[docs]</a><span class="k">class</span> <span class="nc">MCTSAgent</span><span class="p">(</span><span class="n">TrainableAgent</span><span class="p">):</span>
+<div class="viewcode-block" id="MCTS"><a class="viewcode-back" href="../../api/algorithms.html#algorithms.MCTS">[docs]</a><span class="k">class</span> <span class="nc">MCTS</span><span class="p">:</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Implementation of a Monte Carlo Tree Search. We want to learn how to play</span>
 <span class="sd">    a game by keeping track of the best action in any state. We will do this</span>
@@ -173,16 +173,13 @@
 <span class="sd">            player. Note that the player represents whoever *played* the move in the state.</span>
 <span class="sd">        plays (dict): A dictionary of the same format as wins which represents the</span>
 <span class="sd">            number of times the player made a move in the given state</span>
-
-<span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; MCTSAgent().train(game, num_iters=10000, num_episodes=100, verbose=True)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wins</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plays</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="MCTS.search"><a class="viewcode-back" href="../../api/algorithms.html#algorithms.MCTS.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Play out a certain number of games, each time updating our win and play</span>
 <span class="sd">        counts for any state that we visit during the game. As we continue to</span>
@@ -199,19 +196,18 @@
 
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_iters</span><span class="p">)):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">train_episodes</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">num_episodes</span><span class="p">,</span> <span class="n">c_punt</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">search_episodes</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">num_episodes</span><span class="p">,</span> <span class="n">c_punt</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_iters</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">train_episodes</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">num_episodes</span><span class="p">,</span> <span class="n">c_punt</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">training_params</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">search_episodes</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">num_episodes</span><span class="p">,</span> <span class="n">c_punt</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">train_episodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">num_episodes</span><span class="p">,</span> <span class="n">c_punt</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">search_episodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">num_episodes</span><span class="p">,</span> <span class="n">c_punt</span><span class="p">):</span>
         <span class="n">examples</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_episodes</span><span class="p">):</span>
-            <span class="n">examples</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_episode</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">c_punt</span><span class="o">=</span><span class="n">c_punt</span><span class="p">)</span>
+            <span class="n">examples</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_episode</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">c_punt</span><span class="o">=</span><span class="n">c_punt</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">examples</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">train_episode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="MCTS.search_episode"><a class="viewcode-back" href="../../api/algorithms.html#algorithms.MCTS.search_episode">[docs]</a>    <span class="k">def</span> <span class="nf">search_episode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        We play a game by starting in the boards starting state and then</span>
 <span class="sd">        choosing a random move. We then move to the next state, keeping</span>
@@ -232,9 +228,9 @@
             <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">p</span>
             <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">terminal</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
                 <span class="n">examples</span> <span class="o">=</span> <span class="n">assign_rewards</span><span class="p">(</span><span class="n">examples</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">winner</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
-                <span class="k">return</span> <span class="n">examples</span>
+                <span class="k">return</span> <span class="n">examples</span></div>
 
-    <span class="k">def</span> <span class="nf">monte_carlo_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">c_punt</span><span class="p">):</span>
+<div class="viewcode-block" id="MCTS.monte_carlo_action"><a class="viewcode-back" href="../../api/algorithms.html#algorithms.MCTS.monte_carlo_action">[docs]</a>    <span class="k">def</span> <span class="nf">monte_carlo_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">c_punt</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Choose an action during self play based on the UCB1 algorithm. Instead of just</span>
 <span class="sd">        choosing the action that led to the most wins in the past, we choose the action</span>
@@ -266,25 +262,19 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">best_move</span> <span class="o">=</span> <span class="n">choice</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">best_move</span>
+        <span class="k">return</span> <span class="n">best_move</span></div>
 
-    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">examples</span><span class="p">):</span>
+<div class="viewcode-block" id="MCTS.update"><a class="viewcode-back" href="../../api/algorithms.html#algorithms.MCTS.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">examples</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Backpropagate the result of the training episodes</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">for</span> <span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">reward</span><span class="p">]</span> <span class="ow">in</span> <span class="n">examples</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">plays</span><span class="p">[(</span><span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plays</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">wins</span><span class="p">[(</span><span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wins</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">reward</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wins</span><span class="p">[(</span><span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wins</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">reward</span></div>
 
-    <span class="k">def</span> <span class="nf">training_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+<div class="viewcode-block" id="MCTS.best_action"><a class="viewcode-back" href="../../api/algorithms.html#algorithms.MCTS.best_action">[docs]</a>    <span class="k">def</span> <span class="nf">best_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Return the params that we learned through self play</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plays</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wins</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Given the state and player return the best action. </span>
+<span class="sd">        Returns the best action for a given player in a given game state</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">actions</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">action_space</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 
@@ -306,7 +296,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">best_move</span> <span class="o">=</span> <span class="n">choice</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">best_move</span></div>
+        <span class="k">return</span> <span class="n">best_move</span></div></div>
 </pre></div>
 
            </div>

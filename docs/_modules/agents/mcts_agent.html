@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>agents.agent &mdash; Game AI  documentation</title>
+  <title>agents.mcts_agent &mdash; Game AI  documentation</title>
   
 
   
@@ -134,7 +134,7 @@
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
-      <li>agents.agent</li>
+      <li>agents.mcts_agent</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -149,27 +149,33 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for agents.agent</h1><div class="highlight"><pre>
-<div class="viewcode-block" id="Agent"><a class="viewcode-back" href="../../api/agents.html#agents.Agent">[docs]</a><span></span><span class="k">class</span> <span class="nc">Agent</span><span class="p">:</span>
+  <h1>Source code for agents.mcts_agent</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">gameai.algorithms</span> <span class="k">import</span> <span class="n">MCTS</span>
+<span class="kn">from</span> <span class="nn">.trainable_agent</span> <span class="k">import</span> <span class="n">TrainableAgent</span>
+
+
+<div class="viewcode-block" id="MCTSAgent"><a class="viewcode-back" href="../../api/agents.html#agents.MCTSAgent">[docs]</a><span class="k">class</span> <span class="nc">MCTSAgent</span><span class="p">(</span><span class="n">TrainableAgent</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    An agent class which exposes a method called action. Given a certain</span>
-<span class="sd">    state of a game and the player that is playing, the agent retuns the</span>
-<span class="sd">    best action it can find, given a certain heuristic or strategy</span>
+<span class="sd">    Agent that uses Monte Carlo Tree Search (MCTS) </span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">        mcts (MTCS): The mcts search class</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
-<div class="viewcode-block" id="Agent.action"><a class="viewcode-back" href="../../api/agents.html#agents.Agent.action">[docs]</a>    <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Given a game, a state of the game, return an action</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mcts</span> <span class="o">=</span> <span class="n">MCTS</span><span class="p">()</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            g (Game): The game the agent is competing in</span>
-<span class="sd">            s (any): The state of the game</span>
-<span class="sd">            p (int): The current player (either 0 or 1)</span>
+    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mcts</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            int: The index of the action within the returned action space</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+    <span class="k">def</span> <span class="nf">train_episode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mcts</span><span class="o">.</span><span class="n">search_episode</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">training_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mcts</span><span class="o">.</span><span class="n">plays</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mcts</span><span class="o">.</span><span class="n">wins</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mcts</span><span class="o">.</span><span class="n">best_action</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

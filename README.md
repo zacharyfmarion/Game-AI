@@ -39,7 +39,7 @@ pip install --index-url https://test.pypi.org/simple/ gameai
 
 ## Running locally
 
-Clone the repository and install the neccessary dependencies with `pip install -r requirements.txt`.
+Clone the repository and install the neccessary dependencies with `pip install -r requirements.txt`. You will also need to setup a virtual environment and run `pip install -e .` in the root of the project, which will install the package locally.
 
 ## Testing
 

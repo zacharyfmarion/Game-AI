@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>agents.limited_depth_minimax &mdash; Game AI  documentation</title>
+  <title>agents.minimax_agent &mdash; Game AI  documentation</title>
   
 
   
@@ -86,6 +86,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api/core.html">Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/agents.html">Agents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/games.html">Games</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/algorithms.html">Algorithms</a></li>
 </ul>
 
             
@@ -133,7 +134,7 @@
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
-      <li>agents.limited_depth_minimax</li>
+      <li>agents.minimax_agent</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -148,16 +149,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for agents.limited_depth_minimax</h1><div class="highlight"><pre>
+  <h1>Source code for agents.minimax_agent</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">.agent</span> <span class="k">import</span> <span class="n">Agent</span>
 
 
-<div class="viewcode-block" id="LimitedDepthMinimaxAgent"><a class="viewcode-back" href="../../api/agents.html#agents.LimitedDepthMinimaxAgent">[docs]</a><span class="k">class</span> <span class="nc">LimitedDepthMinimaxAgent</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
+<div class="viewcode-block" id="MinimaxAgent"><a class="viewcode-back" href="../../api/agents.html#agents.MinimaxAgent">[docs]</a><span class="k">class</span> <span class="nc">MinimaxAgent</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Implementation of minimax which allows you to specify a cutoff horizon for the</span>
 <span class="sd">    search.</span>
-
-<span class="sd">    TODO: Don&#39;t really need a separate agent for this</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
