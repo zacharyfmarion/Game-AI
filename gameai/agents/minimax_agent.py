@@ -1,5 +1,5 @@
 from gameai.algorithms import Minimax
-from .agent import Agent
+from gameai.core import Agent
 
 
 class MinimaxAgent(Agent):

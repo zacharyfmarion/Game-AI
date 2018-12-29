@@ -1,5 +1,5 @@
 import math
-from .game import Game
+from gameai.core import Game
 
 
 class TicTacToe(Game):

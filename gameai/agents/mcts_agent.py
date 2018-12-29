@@ -1,12 +1,12 @@
 from gameai.algorithms import MCTS
-from .trainable_agent import TrainableAgent
+from gameai.core import TrainableAgent
 
 
 class MCTSAgent(TrainableAgent):
     '''
     Agent that uses Monte Carlo Tree Search (MCTS) 
 
-    Attributes
+    Attributes:
         mcts (MTCS): The mcts search class
     '''
 

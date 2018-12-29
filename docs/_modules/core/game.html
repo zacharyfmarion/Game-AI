@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>games.game &mdash; Game AI  documentation</title>
+  <title>core.game &mdash; Game AI  documentation</title>
   
 
   
@@ -134,7 +134,7 @@
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
-      <li>games.game</li>
+      <li>core.game</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -149,21 +149,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for games.game</h1><div class="highlight"><pre>
-<div class="viewcode-block" id="Game"><a class="viewcode-back" href="../../api/games.html#games.Game">[docs]</a><span></span><span class="k">class</span> <span class="nc">Game</span><span class="p">:</span>
+  <h1>Source code for core.game</h1><div class="highlight"><pre>
+<div class="viewcode-block" id="Game"><a class="viewcode-back" href="../../api/core.html#core.Game">[docs]</a><span></span><span class="k">class</span> <span class="nc">Game</span><span class="p">:</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Game class, which is extended to implement different types of adversarial,</span>
 <span class="sd">    zero sum games. The class itself is stateless and all methods are actually</span>
 <span class="sd">    static.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
-<div class="viewcode-block" id="Game.initial_state"><a class="viewcode-back" href="../../api/games.html#games.Game.initial_state">[docs]</a>    <span class="k">def</span> <span class="nf">initial_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Game.initial_state"><a class="viewcode-back" href="../../api/core.html#core.Game.initial_state">[docs]</a>    <span class="k">def</span> <span class="nf">initial_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Return the initial state of the game</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="Game.action_space"><a class="viewcode-back" href="../../api/games.html#games.Game.action_space">[docs]</a>    <span class="k">def</span> <span class="nf">action_space</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="Game.action_space"><a class="viewcode-back" href="../../api/core.html#core.Game.action_space">[docs]</a>    <span class="k">def</span> <span class="nf">action_space</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        For any given state returns a list of all possible valid actions</span>
 
@@ -172,7 +172,7 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="Game.terminal"><a class="viewcode-back" href="../../api/games.html#games.Game.terminal">[docs]</a>    <span class="k">def</span> <span class="nf">terminal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="Game.terminal"><a class="viewcode-back" href="../../api/core.html#core.Game.terminal">[docs]</a>    <span class="k">def</span> <span class="nf">terminal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns whether a given state is terminal</span>
 
@@ -181,7 +181,7 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="Game.flip_state"><a class="viewcode-back" href="../../api/games.html#games.Game.flip_state">[docs]</a>    <span class="k">def</span> <span class="nf">flip_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="Game.flip_state"><a class="viewcode-back" href="../../api/core.html#core.Game.flip_state">[docs]</a>    <span class="k">def</span> <span class="nf">flip_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Invert the state of the board so that player 0 becomes player 1</span>
 
@@ -190,7 +190,7 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="Game.winner"><a class="viewcode-back" href="../../api/games.html#games.Game.winner">[docs]</a>    <span class="k">def</span> <span class="nf">winner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="Game.winner"><a class="viewcode-back" href="../../api/core.html#core.Game.winner">[docs]</a>    <span class="k">def</span> <span class="nf">winner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns the winner of a game, or -1 if there is no winner</span>
 
@@ -199,7 +199,7 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="Game.reward"><a class="viewcode-back" href="../../api/games.html#games.Game.reward">[docs]</a>    <span class="k">def</span> <span class="nf">reward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+<div class="viewcode-block" id="Game.reward"><a class="viewcode-back" href="../../api/core.html#core.Game.reward">[docs]</a>    <span class="k">def</span> <span class="nf">reward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns the reward for a given state</span>
 
@@ -209,7 +209,7 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="Game.next_state"><a class="viewcode-back" href="../../api/games.html#games.Game.next_state">[docs]</a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+<div class="viewcode-block" id="Game.next_state"><a class="viewcode-back" href="../../api/core.html#core.Game.next_state">[docs]</a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Given a state, action, and player id, return the state resulting from the</span>
 <span class="sd">        player making that move</span>
@@ -221,7 +221,7 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="Game.to_readable_string"><a class="viewcode-back" href="../../api/games.html#games.Game.to_readable_string">[docs]</a>    <span class="k">def</span> <span class="nf">to_readable_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="Game.to_readable_string"><a class="viewcode-back" href="../../api/core.html#core.Game.to_readable_string">[docs]</a>    <span class="k">def</span> <span class="nf">to_readable_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns a pretty-formatted representation of the board</span>
 
@@ -230,7 +230,7 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Game.to_hash"><a class="viewcode-back" href="../../api/games.html#games.Game.to_hash">[docs]</a>    <span class="k">def</span> <span class="nf">to_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="Game.to_hash"><a class="viewcode-back" href="../../api/core.html#core.Game.to_hash">[docs]</a>    <span class="k">def</span> <span class="nf">to_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns a hash of the game state, which is necessary for some algorithms</span>
 <span class="sd">        such as MCTS</span>

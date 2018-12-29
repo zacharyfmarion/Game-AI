@@ -1,6 +1,3 @@
-from .agent import Agent
-from .trainable_agent import TrainableAgent
-
 # Basic agents
 from .human_agent import HumanAgent
 from .minimax_agent import MinimaxAgent

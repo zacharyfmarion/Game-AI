@@ -1,4 +1,4 @@
-from .agent import Agent
+from gameai.core import Agent
 
 
 class HumanAgent(Agent):

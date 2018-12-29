@@ -1,6 +1,6 @@
 from random import choice
 
-from .agent import Agent
+from gameai.core import Agent
 
 
 class RandomAgent(Agent):

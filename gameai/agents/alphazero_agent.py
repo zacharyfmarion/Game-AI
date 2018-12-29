@@ -1,4 +1,4 @@
-from .trainable_agent import TrainableAgent
+from gameai.core import TrainableAgent
 
 
 class AlphaZeroAgent(TrainableAgent):

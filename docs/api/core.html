@@ -185,7 +185,7 @@ themselves</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="agents.html#agents.Agent" title="agents.Agent">Agent</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="#core.Agent" title="core.Agent">Agent</a></td>
 </tr>
 </tbody>
 </table>
@@ -210,7 +210,7 @@ not 0, then we invert the board so that the starting player is still
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>g</strong> (<a class="reference internal" href="games.html#games.Game" title="games.Game"><em>Game</em></a>) – The game the player is playing</li>
+<li><strong>g</strong> (<a class="reference internal" href="#core.Game" title="core.Game"><em>Game</em></a>) – The game the player is playing</li>
 <li><strong>s</strong> (<em>any</em>) – The state of the game</li>
 <li><strong>flip</strong> (<em>bool</em>) – Whether or not to flip the state so that the agent
 thinks that player 0 started the game. This is necessary since
@@ -244,7 +244,7 @@ Statistics on the win rates are recorded and can be displayed.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="games.html#games.Game" title="games.Game">Game</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="#core.Game" title="core.Game">Game</a></td>
 </tr>
 </tbody>
 </table>
@@ -346,6 +346,234 @@ Defaults to false</li>
 <dt id="core.Arena.statistics">
 <code class="descname">statistics</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/arena.html#Arena.statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Arena.statistics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print out the statistics for a given series of games.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="core.Game">
+<em class="property">class </em><code class="descclassname">core.</code><code class="descname">Game</code><a class="reference internal" href="../_modules/core/game.html#Game"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Game" title="Permalink to this definition">¶</a></dt>
+<dd><p>Game class, which is extended to implement different types of adversarial,
+zero sum games. The class itself is stateless and all methods are actually
+static.</p>
+<dl class="method">
+<dt id="core.Game.action_space">
+<code class="descname">action_space</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/game.html#Game.action_space"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Game.action_space" title="Permalink to this definition">¶</a></dt>
+<dd><p>For any given state returns a list of all possible valid actions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> (<em>any</em>) – The state of the game</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.Game.flip_state">
+<code class="descname">flip_state</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/game.html#Game.flip_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Game.flip_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invert the state of the board so that player 0 becomes player 1</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> (<em>any</em>) – The state of the game</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.Game.initial_state">
+<code class="descname">initial_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/game.html#Game.initial_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Game.initial_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the initial state of the game</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.Game.next_state">
+<code class="descname">next_state</code><span class="sig-paren">(</span><em>s</em>, <em>a</em>, <em>p</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/game.html#Game.next_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Game.next_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a state, action, and player id, return the state resulting from the
+player making that move</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>s</strong> (<em>any</em>) – The state of the game</li>
+<li><strong>a</strong> (<em>int</em>) – The action for the player to take</li>
+<li><strong>p</strong> (<em>int</em>) – The player to get the next state for</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.Game.reward">
+<code class="descname">reward</code><span class="sig-paren">(</span><em>s</em>, <em>p</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/game.html#Game.reward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Game.reward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the reward for a given state</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>s</strong> (<em>any</em>) – The state of the game</li>
+<li><strong>p</strong> (<em>int</em>) – The player to get the reward for</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.Game.terminal">
+<code class="descname">terminal</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/game.html#Game.terminal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Game.terminal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether a given state is terminal</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> (<em>any</em>) – The state of the game</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.Game.to_hash">
+<code class="descname">to_hash</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/game.html#Game.to_hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Game.to_hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a hash of the game state, which is necessary for some algorithms
+such as MCTS</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> (<em>any</em>) – The state of the game</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.Game.to_readable_string">
+<code class="descname">to_readable_string</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/game.html#Game.to_readable_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Game.to_readable_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a pretty-formatted representation of the board</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> (<em>any</em>) – The state of the game</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.Game.winner">
+<code class="descname">winner</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/game.html#Game.winner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Game.winner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the winner of a game, or -1 if there is no winner</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> (<em>any</em>) – The state of the game</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<p>Note: There are two types of agents, agents that are trainable and agents that are not. If an agent is trainable then it inherits from the <code class="code docutils literal notranslate"><span class="pre">TrainableAgent</span></code> class and must implement all of the members defined below. For example, <code class="code docutils literal notranslate"><span class="pre">MCTSAgent</span></code> is a trainable agent, while <code class="code docutils literal notranslate"><span class="pre">MinimaxAgent</span></code> is not.</p>
+<dl class="class">
+<dt id="core.Agent">
+<em class="property">class </em><code class="descclassname">core.</code><code class="descname">Agent</code><a class="reference internal" href="../_modules/core/agent.html#Agent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Agent" title="Permalink to this definition">¶</a></dt>
+<dd><p>An agent class which exposes a method called action. Given a certain
+state of a game and the player that is playing, the agent retuns the
+best action it can find, given a certain heuristic or strategy</p>
+<dl class="method">
+<dt id="core.Agent.action">
+<code class="descname">action</code><span class="sig-paren">(</span><em>g</em>, <em>s</em>, <em>p</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/agent.html#Agent.action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Agent.action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a game, a state of the game, return an action</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>g</strong> (<a class="reference internal" href="#core.Game" title="core.Game"><em>Game</em></a>) – The game the agent is competing in</li>
+<li><strong>s</strong> (<em>any</em>) – The state of the game</li>
+<li><strong>p</strong> (<em>int</em>) – The current player (either 0 or 1)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The index of the action within the returned action space</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="core.TrainableAgent">
+<em class="property">class </em><code class="descclassname">core.</code><code class="descname">TrainableAgent</code><a class="reference internal" href="../_modules/core/trainable_agent.html#TrainableAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.TrainableAgent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that extends the functionality of a normal agent. This is necessary
+because agents are bound to a particular player, but for some algorithms
+the agent is really being trained to play optimally for both plays, so we
+have this class house the training data and then pass it into the agents
+when they are instantiated to avoid duplicated work</p>
+<dl class="method">
+<dt id="core.TrainableAgent.train">
+<code class="descname">train</code><span class="sig-paren">(</span><em>g</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/trainable_agent.html#TrainableAgent.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.TrainableAgent.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train the agent. As a convenience this should return <code class="code docutils literal notranslate"><span class="pre">self.training_params()</span></code>
+at the end of training</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>g</strong> (<a class="reference internal" href="#core.Game" title="core.Game"><em>Game</em></a>) – The game the agent is training on</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The training params of the agent</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">tuple</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.TrainableAgent.train_episode">
+<code class="descname">train_episode</code><span class="sig-paren">(</span><em>g</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/trainable_agent.html#TrainableAgent.train_episode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.TrainableAgent.train_episode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Single training iteration</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>g</strong> (<a class="reference internal" href="#core.Game" title="core.Game"><em>Game</em></a>) – The game the agent is training on</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.TrainableAgent.training_params">
+<code class="descname">training_params</code><span class="sig-paren">(</span><em>g</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/trainable_agent.html#TrainableAgent.training_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.TrainableAgent.training_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the params that result from training</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>g</strong> (<a class="reference internal" href="#core.Game" title="core.Game"><em>Game</em></a>) – The game the agent is training on</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
