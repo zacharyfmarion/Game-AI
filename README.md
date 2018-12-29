@@ -52,6 +52,7 @@ Build the project with `python3 setup.py sdist bdist_wheel`.
 ## Roadmap
 
 - [x] Add Monte Carlo Tree Search
+- [ ] Add Alpha Beta Pruning
 - [ ] Add Othello as a game
 - [ ] Add Chess as a game
 - [ ] Add a simple RL agent & trainer

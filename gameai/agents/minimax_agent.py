@@ -1,12 +1,10 @@
 from .agent import Agent
 
 
-class LimitedDepthMinimaxAgent(Agent):
+class MinimaxAgent(Agent):
     '''
     Implementation of minimax which allows you to specify a cutoff horizon for the
     search.
-
-    TODO: Don't really need a separate agent for this
     '''
 
     def __init__(self, **kwargs):

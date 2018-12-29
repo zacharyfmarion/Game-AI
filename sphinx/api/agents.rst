@@ -23,6 +23,4 @@ Classes
     
 .. autoclass:: agents.MinimaxAgent
     
-.. autoclass:: agents.LimitedDepthMinimaxAgent
-    
 .. autoclass:: agents.MCTSAgent
