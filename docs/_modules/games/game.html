@@ -26,6 +26,7 @@
 
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 
@@ -164,30 +165,46 @@
 <div class="viewcode-block" id="Game.action_space"><a class="viewcode-back" href="../../api/games.html#games.Game.action_space">[docs]</a>    <span class="k">def</span> <span class="nf">action_space</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        For any given state returns a list of all possible valid actions</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            s (any): The state of the game</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="Game.terminal"><a class="viewcode-back" href="../../api/games.html#games.Game.terminal">[docs]</a>    <span class="k">def</span> <span class="nf">terminal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns whether a given state is terminal</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            s (any): The state of the game</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="Game.flip_state"><a class="viewcode-back" href="../../api/games.html#games.Game.flip_state">[docs]</a>    <span class="k">def</span> <span class="nf">flip_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Invert the state of the board so that player 0 becomes player 1</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            s (any): The state of the game</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="Game.winner"><a class="viewcode-back" href="../../api/games.html#games.Game.winner">[docs]</a>    <span class="k">def</span> <span class="nf">winner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns the winner of a game, or -1 if there is no winner</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            s (any): The state of the game</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="Game.reward"><a class="viewcode-back" href="../../api/games.html#games.Game.reward">[docs]</a>    <span class="k">def</span> <span class="nf">reward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns the reward for a given state</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            s (any): The state of the game</span>
+<span class="sd">            p (int): The player to get the reward for</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
@@ -195,12 +212,20 @@
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Given a state, action, and player id, return the state resulting from the</span>
 <span class="sd">        player making that move</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            s (any): The state of the game</span>
+<span class="sd">            a (int): The action for the player to take</span>
+<span class="sd">            p (int): The player to get the next state for</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="Game.to_readable_string"><a class="viewcode-back" href="../../api/games.html#games.Game.to_readable_string">[docs]</a>    <span class="k">def</span> <span class="nf">to_readable_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns a pretty-formatted representation of the board</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            s (any): The state of the game</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></div>
 
@@ -208,6 +233,9 @@
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns a hash of the game state, which is necessary for some algorithms</span>
 <span class="sd">        such as MCTS</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            s (any): The state of the game</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">))</span></div></div>
 </pre></div>
