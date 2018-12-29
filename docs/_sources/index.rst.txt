@@ -21,3 +21,4 @@ GameAI contains a series of well-defined abstractions that are common in AI, suc
    api/core.rst
    api/agents.rst
    api/games.rst
+   api/algorithms.rst

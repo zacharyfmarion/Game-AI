@@ -1,0 +1,326 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Algorithms &mdash; Game AI  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Games" href="games.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Game AI
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agents.html">Agents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="games.html">Games</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Algorithms</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Game AI</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Algorithms</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/algorithms.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="algorithms">
+<h1>Algorithms<a class="headerlink" href="#algorithms" title="Permalink to this headline">¶</a></h1>
+<p>Collection of useful AI algorithms</p>
+<dl class="class">
+<dt id="algorithms.MCTS">
+<em class="property">class </em><code class="descclassname">algorithms.</code><code class="descname">MCTS</code><a class="reference internal" href="../_modules/algorithms/mcts.html#MCTS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#algorithms.MCTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implementation of a Monte Carlo Tree Search. We want to learn how to play
+a game by keeping track of the best action in any state. We will do this
+by propagating whether or not the current player won the game back up through
+the game history. After enough iterations of game simulations we can choose
+the best move based on this stored information</p>
+<dl class="attribute">
+<dt id="algorithms.MCTS.wins">
+<code class="descname">wins</code><a class="headerlink" href="#algorithms.MCTS.wins" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dictionary where the key is a tuple <code class="code docutils literal notranslate"><span class="pre">(player,</span> <span class="pre">state_hash)</span></code>
+and the value is the number of wins that occurred at that state for the
+player. Note that the player represents whoever <em>played</em> the move in the state.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="algorithms.MCTS.plays">
+<code class="descname">plays</code><a class="headerlink" href="#algorithms.MCTS.plays" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dictionary of the same format as wins which represents the
+number of times the player made a move in the given state</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="algorithms.MCTS.best_action">
+<code class="descname">best_action</code><span class="sig-paren">(</span><em>g</em>, <em>s</em>, <em>p</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/algorithms/mcts.html#MCTS.best_action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#algorithms.MCTS.best_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the best action for a given player in a given game state</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="algorithms.MCTS.monte_carlo_action">
+<code class="descname">monte_carlo_action</code><span class="sig-paren">(</span><em>g</em>, <em>s</em>, <em>p</em>, <em>c_punt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/algorithms/mcts.html#MCTS.monte_carlo_action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#algorithms.MCTS.monte_carlo_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Choose an action during self play based on the UCB1 algorithm. Instead of just
+choosing the action that led to the most wins in the past, we choose the action
+that balances this concern with exploration</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="algorithms.MCTS.search">
+<code class="descname">search</code><span class="sig-paren">(</span><em>g</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/algorithms/mcts.html#MCTS.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#algorithms.MCTS.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Play out a certain number of games, each time updating our win and play
+counts for any state that we visit during the game. As we continue to
+play, num_wins / num_plays for a given state should begin to converge on
+the true optimality of a state</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>g</strong> (<a class="reference internal" href="games.html#games.Game" title="games.Game"><em>Game</em></a>) – Game to train on</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="algorithms.MCTS.search_episode">
+<code class="descname">search_episode</code><span class="sig-paren">(</span><em>g</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/algorithms/mcts.html#MCTS.search_episode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#algorithms.MCTS.search_episode" title="Permalink to this definition">¶</a></dt>
+<dd><p>We play a game by starting in the boards starting state and then
+choosing a random move. We then move to the next state, keeping
+track of which moves we chose. At the end of the game we go through
+our visited list and update the values of wins and plays so that we
+have a better understanding of which states are good and which are bad</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="algorithms.MCTS.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>examples</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/algorithms/mcts.html#MCTS.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#algorithms.MCTS.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Backpropagate the result of the training episodes</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="algorithms.Minimax">
+<em class="property">class </em><code class="descclassname">algorithms.</code><code class="descname">Minimax</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/algorithms/minimax.html#Minimax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#algorithms.Minimax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implementation of the minimax algorithm.</p>
+<dl class="attribute">
+<dt id="algorithms.Minimax.horizon">
+<code class="descname">horizon</code><a class="headerlink" href="#algorithms.Minimax.horizon" title="Permalink to this definition">¶</a></dt>
+<dd><p>The max depth of the search. Defaults to infinity. Note that if this
+is set then the game’s hueristic is used</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="games.html" class="btn btn-neutral" title="Games" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Zachary Marion
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

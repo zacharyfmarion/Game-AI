@@ -92,6 +92,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="games.html">Games</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms.html">Algorithms</a></li>
 </ul>
 
             
@@ -264,7 +265,7 @@ from the current action space each turn</p>
 
 <dl class="class">
 <dt id="agents.HumanAgent">
-<em class="property">class </em><code class="descclassname">agents.</code><code class="descname">HumanAgent</code><a class="reference internal" href="../_modules/agents/human.html#HumanAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#agents.HumanAgent" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">agents.</code><code class="descname">HumanAgent</code><a class="reference internal" href="../_modules/agents/human_agent.html#HumanAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#agents.HumanAgent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Human agent, which waits for human input to determine what action to take.
 Note that they should input an integer corresponding to the index of the
 action they want to select</p>
@@ -272,61 +273,33 @@ action they want to select</p>
 
 <dl class="class">
 <dt id="agents.MinimaxAgent">
-<em class="property">class </em><code class="descclassname">agents.</code><code class="descname">MinimaxAgent</code><a class="reference internal" href="../_modules/agents/minimax.html#MinimaxAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#agents.MinimaxAgent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implementation of minimax without alpha beta pruning</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="agents.LimitedDepthMinimaxAgent">
-<em class="property">class </em><code class="descclassname">agents.</code><code class="descname">LimitedDepthMinimaxAgent</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/agents/limited_depth_minimax.html#LimitedDepthMinimaxAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#agents.LimitedDepthMinimaxAgent" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">agents.</code><code class="descname">MinimaxAgent</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/agents/minimax_agent.html#MinimaxAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#agents.MinimaxAgent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implementation of minimax which allows you to specify a cutoff horizon for the
 search.</p>
-<p>TODO: Don’t really need a separate agent for this</p>
+<dl class="attribute">
+<dt id="agents.MinimaxAgent.minimax">
+<code class="descname">minimax</code><a class="headerlink" href="#agents.MinimaxAgent.minimax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Algorithm that runs the minimax search</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="algorithms.html#algorithms.Minimax" title="algorithms.Minimax">Minimax</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="agents.MCTSAgent">
-<em class="property">class </em><code class="descclassname">agents.</code><code class="descname">MCTSAgent</code><a class="reference internal" href="../_modules/agents/mcts.html#MCTSAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#agents.MCTSAgent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implementation of a Monte Carlo Tree Search. We want to learn how to play
-a game by keeping track of the best action in any state. We will do this
-by propagating whether or not the current player won the game back up through
-the game history. After enough iterations of game simulations we can choose
-the best move based on this stored information</p>
-<dl class="attribute">
-<dt id="agents.MCTSAgent.wins">
-<code class="descname">wins</code><a class="headerlink" href="#agents.MCTSAgent.wins" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary where the key is a tuple <code class="code docutils literal notranslate"><span class="pre">(player,</span> <span class="pre">state_hash)</span></code>
-and the value is the number of wins that occurred at that state for the
-player. Note that the player represents whoever <em>played</em> the move in the state.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dict</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="agents.MCTSAgent.plays">
-<code class="descname">plays</code><a class="headerlink" href="#agents.MCTSAgent.plays" title="Permalink to this definition">¶</a></dt>
-<dd><p>A dictionary of the same format as wins which represents the
-number of times the player made a move in the given state</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dict</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">MCTSAgent</span><span class="p">()</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="n">num_iters</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">num_episodes</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
+<em class="property">class </em><code class="descclassname">agents.</code><code class="descname">MCTSAgent</code><a class="reference internal" href="../_modules/agents/mcts_agent.html#MCTSAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#agents.MCTSAgent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Agent that uses Monte Carlo Tree Search (MCTS)</p>
+<dl class="docutils">
+<dt>Attributes</dt>
+<dd>mcts (MTCS): The mcts search class</dd>
+</dl>
 </dd></dl>
 
 </div>
