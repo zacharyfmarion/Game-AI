@@ -158,6 +158,14 @@
 <div class="viewcode-block" id="Agent.action"><a class="viewcode-back" href="../../api/agents.html#agents.Agent.action">[docs]</a>    <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Given a game, a state of the game, return an action</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            g (Game): The game the agent is competing in</span>
+<span class="sd">            s (any): The state of the game</span>
+<span class="sd">            p (int): The current player (either 0 or 1)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The index of the action within the returned action space</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
 </pre></div>

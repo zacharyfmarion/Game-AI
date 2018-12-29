@@ -78,13 +78,15 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+              <p class="caption"><span class="caption-text">Getting Started:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference:</span></p>
+<ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="agents.html">Agents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="games.html">Games</a></li>
-<li class="toctree-l1"><a class="reference internal" href="trainers.html">Trainers</a></li>
 </ul>
 
             
@@ -159,12 +161,70 @@
 agent that backs it. Agents learn the optimal play for each player,
 while players are only concerned about the optimal play for
 themselves</p>
+<dl class="attribute">
+<dt id="core.Player.player_id">
+<code class="descname">player_id</code><a class="headerlink" href="#core.Player.player_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The id of the player</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="core.Player.agent">
+<code class="descname">agent</code><a class="headerlink" href="#core.Player.agent" title="Permalink to this definition">¶</a></dt>
+<dd><p>The agent associated with the player</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="agents.html#agents.Agent" title="agents.Agent">Agent</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code> – If the id is not 0 or 1</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="core.Player.action">
 <code class="descname">action</code><span class="sig-paren">(</span><em>g</em>, <em>s</em>, <em>flip</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/player.html#Player.action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Player.action" title="Permalink to this definition">¶</a></dt>
 <dd><p>Take an action with the backing agent. If the starting player is
 not 0, then we invert the board so that the starting player is still
 0 from the perspective of the agent</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>g</strong> (<a class="reference internal" href="games.html#games.Game" title="games.Game"><em>Game</em></a>) – The game the player is playing</li>
+<li><strong>s</strong> (<em>any</em>) – The state of the game</li>
+<li><strong>flip</strong> (<em>bool</em>) – Whether or not to flip the state so that the agent
+thinks that player 0 started the game. This is necessary since
+trainable agents like MCTSAgent operate under the assumption that
+player 0 always starts</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The index of the action the player will take</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -174,15 +234,90 @@ not 0, then we invert the board so that the starting player is still
 <em class="property">class </em><code class="descclassname">core.</code><code class="descname">Arena</code><span class="sig-paren">(</span><em>game</em>, <em>players</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/arena.html#Arena"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Arena" title="Permalink to this definition">¶</a></dt>
 <dd><p>Place where two agents are pitted against eachother in a series of games.
 Statistics on the win rates are recorded and can be displayed.</p>
+<dl class="attribute">
+<dt id="core.Arena.game">
+<code class="descname">game</code><a class="headerlink" href="#core.Arena.game" title="Permalink to this definition">¶</a></dt>
+<dd><p>The game that is being played</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="games.html#games.Game" title="games.Game">Game</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="core.Arena.players">
+<code class="descname">players</code><a class="headerlink" href="#core.Arena.players" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of Player objects. Note that there should only be two, and
+the ids of the player should map to the index of the player in the array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="core.Arena.games_played">
+<code class="descname">games_played</code><a class="headerlink" href="#core.Arena.games_played" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of games played in the arena</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="core.Arena.wins">
+<code class="descname">wins</code><a class="headerlink" href="#core.Arena.wins" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of two integers representing the number of wins of each player,
+with the index being the id of the player</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="core.Arena.play_game">
 <code class="descname">play_game</code><span class="sig-paren">(</span><em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/arena.html#Arena.play_game"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Arena.play_game" title="Permalink to this definition">¶</a></dt>
 <dd><p>Play a single game, doing the necessary bookkeeping to maintain
 accurate statistics and returning the winner (or -1 if no winner).</p>
-<p>NOTE: We always have the start with player being 0 from the persepctive
-of the agent. Because of this we pass in a ‘flip’ boolean to the player
-class in the action method, which flips the board and makes it seems as
-though player 0 started, even if it was actually player 1</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">We always have the start with player being 0 from the persepctive
+of the agent. Because of this we pass in a <code class="code docutils literal notranslate"><span class="pre">flip</span></code> boolean to
+the player class in the action method, which flips the board and
+makes it seems as though player 0 started, even if it was actually
+player 1</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>verbose</strong> (<em>bool</em>) – Whether or not to print the output of the game.
+Defaults to false</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The winner of the game</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -190,6 +325,19 @@ though player 0 started, even if it was actually player 1</p>
 <code class="descname">play_games</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/core/arena.html#Arena.play_games"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.Arena.play_games" title="Permalink to this definition">¶</a></dt>
 <dd><p>Play a series of games between the players, recording how they did
 so that we can display statistics on which player performed better</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_episodes</strong> (<em>int</em>) – The number of games to play, defaults to 10</li>
+<li><strong>verbose</strong> (<em>bool</em>) – Whether or not to print output from each game.
+Defaults to false</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">

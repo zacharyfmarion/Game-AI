@@ -162,7 +162,10 @@
 <dl class="class">
 <dt id="games.Game">
 <em class="property">class </em><code class="descclassname">games.</code><code class="descname">Game</code><a class="reference internal" href="../_modules/games/game.html#Game"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#games.Game" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><p>Game class, which is extended to implement different types of adversarial,
+zero sum games. The class itself is stateless and all methods are actually
+static.</p>
+<dl class="method">
 <dt id="games.Game.action_space">
 <code class="descname">action_space</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/games/game.html#Game.action_space"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#games.Game.action_space" title="Permalink to this definition">¶</a></dt>
 <dd><p>For any given state returns a list of all possible valid actions</p>
@@ -229,6 +232,19 @@ such as MCTS</p>
 <dd><p>Implements a 3x3 game of tictactoe, with state represented as an array of length 9.
 Currently the implementation is somewhat brittle and cannot be extended to an nxn
 board easily.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">TicTacToe</span><span class="p">()</span><span class="o">.</span><span class="n">initial_state</span><span class="p">()</span>
+<span class="go">[-1, -1, -1, -1, -1, -1, -1, -1, -1]</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">TicTacToe</span><span class="p">()</span><span class="o">.</span><span class="n">to_readable_string</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">   | O |</span>
+<span class="go">-----------</span>
+<span class="go"> X | X |</span>
+<span class="go">-----------</span>
+<span class="go">   | O |</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>

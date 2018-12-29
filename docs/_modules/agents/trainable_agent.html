@@ -162,20 +162,32 @@
 
 <div class="viewcode-block" id="TrainableAgent.train"><a class="viewcode-back" href="../../api/agents.html#agents.TrainableAgent.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Train the agent. As a convenience this should return self.training_params()</span>
+<span class="sd">        Train the agent. As a convenience this should return :code:`self.training_params()`</span>
 <span class="sd">        at the end of training</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            g (Game): The game the agent is training on</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: The training params of the agent</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="TrainableAgent.train_episode"><a class="viewcode-back" href="../../api/agents.html#agents.TrainableAgent.train_episode">[docs]</a>    <span class="k">def</span> <span class="nf">train_episode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Single training iteration</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            g (Game): The game the agent is training on</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="TrainableAgent.training_params"><a class="viewcode-back" href="../../api/agents.html#agents.TrainableAgent.training_params">[docs]</a>    <span class="k">def</span> <span class="nf">training_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Return the params that result from training</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            g (Game): The game the agent is training on</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
 </pre></div>

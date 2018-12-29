@@ -9,4 +9,4 @@ test:
 	python -m pytest
 
 docs:
-	sphinx-build -b html sphynx docs
+	sphinx-build -b html sphinx docs

@@ -171,6 +171,25 @@ best action it can find, given a certain heuristic or strategy</p>
 <dt id="agents.Agent.action">
 <code class="descname">action</code><span class="sig-paren">(</span><em>g</em>, <em>s</em>, <em>p</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/agents/agent.html#Agent.action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#agents.Agent.action" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a game, a state of the game, return an action</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>g</strong> (<a class="reference internal" href="games.html#games.Game" title="games.Game"><em>Game</em></a>) – The game the agent is competing in</li>
+<li><strong>s</strong> (<em>any</em>) – The state of the game</li>
+<li><strong>p</strong> (<em>int</em>) – The current player (either 0 or 1)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The index of the action within the returned action space</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -186,20 +205,48 @@ when they are instantiated to avoid duplicated work</p>
 <dl class="method">
 <dt id="agents.TrainableAgent.train">
 <code class="descname">train</code><span class="sig-paren">(</span><em>g</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/agents/trainable_agent.html#TrainableAgent.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#agents.TrainableAgent.train" title="Permalink to this definition">¶</a></dt>
-<dd><p>Train the agent. As a convenience this should return self.training_params()
+<dd><p>Train the agent. As a convenience this should return <code class="code docutils literal notranslate"><span class="pre">self.training_params()</span></code>
 at the end of training</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>g</strong> (<a class="reference internal" href="games.html#games.Game" title="games.Game"><em>Game</em></a>) – The game the agent is training on</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The training params of the agent</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">tuple</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="agents.TrainableAgent.train_episode">
 <code class="descname">train_episode</code><span class="sig-paren">(</span><em>g</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/agents/trainable_agent.html#TrainableAgent.train_episode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#agents.TrainableAgent.train_episode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Single training iteration</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>g</strong> (<a class="reference internal" href="games.html#games.Game" title="games.Game"><em>Game</em></a>) – The game the agent is training on</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="agents.TrainableAgent.training_params">
 <code class="descname">training_params</code><span class="sig-paren">(</span><em>g</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/agents/trainable_agent.html#TrainableAgent.training_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#agents.TrainableAgent.training_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the params that result from training</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>g</strong> (<a class="reference internal" href="games.html#games.Game" title="games.Game"><em>Game</em></a>) – The game the agent is training on</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -244,6 +291,41 @@ a game by keeping track of the best action in any state. We will do this
 by propagating whether or not the current player won the game back up through
 the game history. After enough iterations of game simulations we can choose
 the best move based on this stored information</p>
+<dl class="attribute">
+<dt id="agents.MCTSAgent.wins">
+<code class="descname">wins</code><a class="headerlink" href="#agents.MCTSAgent.wins" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dictionary where the key is a tuple <code class="code docutils literal notranslate"><span class="pre">(player,</span> <span class="pre">state_hash)</span></code>
+and the value is the number of wins that occurred at that state for the
+player. Note that the player represents whoever <em>played</em> the move in the state.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="agents.MCTSAgent.plays">
+<code class="descname">plays</code><a class="headerlink" href="#agents.MCTSAgent.plays" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dictionary of the same format as wins which represents the
+number of times the player made a move in the given state</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">MCTSAgent</span><span class="p">()</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="n">num_iters</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">num_episodes</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>

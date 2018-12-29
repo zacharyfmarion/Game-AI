@@ -1,4 +1,10 @@
 class Game:
+    '''
+    Game class, which is extended to implement different types of adversarial,
+    zero sum games. The class itself is stateless and all methods are actually
+    static.
+    '''
+
     def initial_state(self):
         '''
         Return the initial state of the game

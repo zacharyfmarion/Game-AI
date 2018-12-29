@@ -7,6 +7,17 @@ class TicTacToe(Game):
     Implements a 3x3 game of tictactoe, with state represented as an array of length 9.
     Currently the implementation is somewhat brittle and cannot be extended to an nxn
     board easily.
+
+    Examples:
+        >>> TicTacToe().initial_state()
+        [-1, -1, -1, -1, -1, -1, -1, -1, -1]
+
+        >>> TicTacToe().to_readable_string([-1, 1, -1, 0, 0, -1, -1, 1, -1])
+           | O |
+        -----------
+         X | X |
+        -----------
+           | O |
     '''
 
     def initial_state(self):

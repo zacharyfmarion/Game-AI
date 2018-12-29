@@ -15,6 +15,16 @@ class MCTSAgent(TrainableAgent):
     by propagating whether or not the current player won the game back up through
     the game history. After enough iterations of game simulations we can choose
     the best move based on this stored information
+
+    Attributes:
+        wins (dict): A dictionary where the key is a tuple :code:`(player, state_hash)`
+            and the value is the number of wins that occurred at that state for the
+            player. Note that the player represents whoever *played* the move in the state.
+        plays (dict): A dictionary of the same format as wins which represents the
+            number of times the player made a move in the given state
+
+    Examples:
+        >>> MCTSAgent().train(game, num_iters=10000, num_episodes=100, verbose=True)
     '''
 
     def __init__(self):
@@ -27,6 +37,9 @@ class MCTSAgent(TrainableAgent):
         counts for any state that we visit during the game. As we continue to
         play, num_wins / num_plays for a given state should begin to converge on
         the true optimality of a state
+
+        Args:
+            g (Game): Game to train on
         '''
         num_iters = kwargs.get('num_iters', 100)
         num_episodes = kwargs.get('num_episodes', 100)

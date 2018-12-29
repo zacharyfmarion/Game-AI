@@ -165,6 +165,16 @@
 <span class="sd">    by propagating whether or not the current player won the game back up through</span>
 <span class="sd">    the game history. After enough iterations of game simulations we can choose</span>
 <span class="sd">    the best move based on this stored information</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        wins (dict): A dictionary where the key is a tuple :code:`(player, state_hash)`</span>
+<span class="sd">            and the value is the number of wins that occurred at that state for the</span>
+<span class="sd">            player. Note that the player represents whoever *played* the move in the state.</span>
+<span class="sd">        plays (dict): A dictionary of the same format as wins which represents the</span>
+<span class="sd">            number of times the player made a move in the given state</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; MCTSAgent().train(game, num_iters=10000, num_episodes=100, verbose=True)</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -177,6 +187,9 @@
 <span class="sd">        counts for any state that we visit during the game. As we continue to</span>
 <span class="sd">        play, num_wins / num_plays for a given state should begin to converge on</span>
 <span class="sd">        the true optimality of a state</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            g (Game): Game to train on</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">num_iters</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;num_iters&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
         <span class="n">num_episodes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;num_episodes&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>

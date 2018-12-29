@@ -14,17 +14,29 @@ class TrainableAgent(Agent):
         '''
         Train the agent. As a convenience this should return :code:`self.training_params()`
         at the end of training
+
+        Args:
+            g (Game): The game the agent is training on
+
+        Returns:
+            tuple: The training params of the agent
         '''
         raise NotImplementedError
 
     def train_episode(self, g, **kwargs):
         '''
         Single training iteration
+
+        Args:
+            g (Game): The game the agent is training on
         '''
         raise NotImplementedError
 
     def training_params(self, g):
         '''
         Return the params that result from training
+
+        Args:
+            g (Game): The game the agent is training on
         '''
         raise NotImplementedError

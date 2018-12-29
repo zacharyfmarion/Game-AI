@@ -148,7 +148,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for core.arena</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">random</span>
+<span></span><span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">choice</span>
 
 <span class="kn">from</span> <span class="nn">.player</span> <span class="k">import</span> <span class="n">Player</span>
 
@@ -157,12 +157,25 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Place where two agents are pitted against eachother in a series of games.</span>
 <span class="sd">    Statistics on the win rates are recorded and can be displayed.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        game (Game): The game that is being played</span>
+<span class="sd">        players (list): List of Player objects. Note that there should only be two, and</span>
+<span class="sd">            the ids of the player should map to the index of the player in the array.</span>
+<span class="sd">        games_played (int): The number of games played in the arena</span>
+<span class="sd">        wins (list): List of two integers representing the number of wins of each player,</span>
+<span class="sd">            with the index being the id of the player</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">game</span><span class="p">,</span> <span class="n">players</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        The `players` argument is a list of players to be used. In the future, when</span>
-<span class="sd">        more than two players are supported this can be generalized to n players.</span>
+<span class="sd">        Note:</span>
+<span class="sd">            The `players` argument is a list of players to be used. In the future, when</span>
+<span class="sd">            more than two players are supported this can be generalized to n players.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            game (Game)</span>
+<span class="sd">            players (list)</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">Player</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">players</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expected `model` argument to be a list of &#39;</span>
@@ -178,6 +191,11 @@
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Play a series of games between the players, recording how they did</span>
 <span class="sd">        so that we can display statistics on which player performed better</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_episodes (int): The number of games to play, defaults to 10</span>
+<span class="sd">            verbose (bool): Whether or not to print output from each game.</span>
+<span class="sd">                Defaults to false</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">num_episodes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;num_episodes&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
         <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;verbose&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
@@ -206,13 +224,22 @@
 <span class="sd">        Play a single game, doing the necessary bookkeeping to maintain</span>
 <span class="sd">        accurate statistics and returning the winner (or -1 if no winner).</span>
 
-<span class="sd">        NOTE: We always have the start with player being 0 from the persepctive</span>
-<span class="sd">        of the agent. Because of this we pass in a &#39;flip&#39; boolean to the player</span>
-<span class="sd">        class in the action method, which flips the board and makes it seems as</span>
-<span class="sd">        though player 0 started, even if it was actually player 1</span>
+<span class="sd">        Note:</span>
+<span class="sd">            We always have the start with player being 0 from the persepctive</span>
+<span class="sd">            of the agent. Because of this we pass in a :code:`flip` boolean to</span>
+<span class="sd">            the player class in the action method, which flips the board and</span>
+<span class="sd">            makes it seems as though player 0 started, even if it was actually</span>
+<span class="sd">            player 1</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            verbose (bool): Whether or not to print the output of the game.</span>
+<span class="sd">                Defaults to false</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The winner of the game</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">initial_state</span><span class="p">()</span>
-        <span class="n">starting_player</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">player_id</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">players</span><span class="p">])</span>
+        <span class="n">starting_player</span> <span class="o">=</span> <span class="n">choice</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">player_id</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">players</span><span class="p">])</span>
         <span class="n">player</span> <span class="o">=</span> <span class="n">starting_player</span>
 
         <span class="c1"># Play out the full game</span>

@@ -154,6 +154,13 @@
 <span class="sd">    agent that backs it. Agents learn the optimal play for each player,</span>
 <span class="sd">    while players are only concerned about the optimal play for</span>
 <span class="sd">    themselves</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        player_id (int): The id of the player</span>
+<span class="sd">        agent (Agent): The agent associated with the player</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If the id is not 0 or 1</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_id</span><span class="p">,</span> <span class="n">agent</span><span class="p">):</span>
@@ -167,6 +174,17 @@
 <span class="sd">        Take an action with the backing agent. If the starting player is</span>
 <span class="sd">        not 0, then we invert the board so that the starting player is still</span>
 <span class="sd">        0 from the perspective of the agent</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            g (Game): The game the player is playing</span>
+<span class="sd">            s (any): The state of the game</span>
+<span class="sd">            flip (bool): Whether or not to flip the state so that the agent</span>
+<span class="sd">                thinks that player 0 started the game. This is necessary since</span>
+<span class="sd">                trainable agents like MCTSAgent operate under the assumption that</span>
+<span class="sd">                player 0 always starts</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The index of the action the player will take</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">state</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">flip_state</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">if</span> <span class="n">flip</span> <span class="k">else</span> <span class="n">s</span>
         <span class="n">player</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">player_id</span> <span class="k">if</span> <span class="n">flip</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">player_id</span>
