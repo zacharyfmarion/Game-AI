@@ -390,15 +390,80 @@ is set then the game’s hueristic is used</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="algorithms.Minimax.best_action">
+<code class="descname">best_action</code><span class="sig-paren">(</span><em>g</em>, <em>s</em>, <em>p</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/algorithms/minimax.html#Minimax.best_action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#algorithms.Minimax.best_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the best action given a state and player</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>g</strong> (<a class="reference internal" href="core.html#core.Game" title="core.Game"><em>Game</em></a>) – The game object</li>
+<li><strong>s</strong> (<em>any</em>) – The current state of the game</li>
+<li><strong>p</strong> (<em>int</em>) – The current player</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The best action the algorithm can find</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="algorithms.Minimax.max_play">
 <code class="descname">max_play</code><span class="sig-paren">(</span><em>g</em>, <em>s</em>, <em>p</em>, <em>depth</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/algorithms/minimax.html#Minimax.max_play"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#algorithms.Minimax.max_play" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the largest value out of all of the child states</p>
+<dd><p>Get the largest value of all the child nodes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>g</strong> (<a class="reference internal" href="core.html#core.Game" title="core.Game"><em>Game</em></a>) – The game</li>
+<li><strong>s</strong> (<em>any</em>) – The state of the game upon execution</li>
+<li><strong>p</strong> (<em>int</em>) – The current player (who is about to make a move)</li>
+<li><strong>depth</strong> (<em>int</em>) – The current depth of the search tree</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The largest value of all the child states</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="algorithms.Minimax.min_play">
 <code class="descname">min_play</code><span class="sig-paren">(</span><em>g</em>, <em>s</em>, <em>p</em>, <em>depth</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/algorithms/minimax.html#Minimax.min_play"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#algorithms.Minimax.min_play" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the smallest value out of all of the child states</p>
+<dd><p>Get the smallest value of all the child nodes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>g</strong> (<a class="reference internal" href="core.html#core.Game" title="core.Game"><em>Game</em></a>) – The game</li>
+<li><strong>s</strong> (<em>any</em>) – The state of the game upon execution</li>
+<li><strong>p</strong> (<em>int</em>) – The current player (who is about to make a move)</li>
+<li><strong>depth</strong> (<em>int</em>) – The current depth of the search tree</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The smallest value of all the child states</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

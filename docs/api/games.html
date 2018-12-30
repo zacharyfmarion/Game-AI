@@ -177,6 +177,21 @@ board easily.</p>
 </div>
 </dd></dl>
 
+<dl class="class">
+<dt id="games.LineTacToe">
+<em class="property">class </em><code class="descclassname">games.</code><code class="descname">LineTacToe</code><a class="reference internal" href="../_modules/games/linetactoe.html#LineTacToe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#games.LineTacToe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements a 1x3 tictactoe-like, with state represented as an array of length 3.
+The goal of the game is to get two consecutive xs or os. For example, [o, o, x]
+is winning for o. Note that whoever starts the game should win, every time, as
+going in the center will win the game. However this is a good game to test new
+agent / algorithm implementations as the entire state space is only 11 states.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">LineTacToe</span><span class="p">()</span><span class="o">.</span><span class="n">initial_state</span><span class="p">()</span>
+<span class="go">[-1, -1, -1]</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </div>
 
 

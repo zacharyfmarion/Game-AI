@@ -19,3 +19,6 @@ Note: There are two types of agents, agents that are trainable and agents that a
     
 .. autoclass:: core.TrainableAgent
     :members:
+    
+.. autoclass:: core.Algorithm
+    :members:

@@ -2,12 +2,13 @@ import math
 from random import choice
 from tqdm import tqdm
 
+from gameai.core import Algorithm
 from .utils import assign_rewards
 
 DEFAULT_C_PUNT = 1.4
 
 
-class MCTS:
+class MCTS(Algorithm):
     '''
     Implementation of a Monte Carlo Tree Search. We want to learn how to play
     a game by keeping track of the best action in any state. We will do this

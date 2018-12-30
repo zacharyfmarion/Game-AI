@@ -1,4 +1,7 @@
-class Minimax:
+from gameai.core import Algorithm
+
+
+class Minimax(Algorithm):
     '''
     Implementation of the minimax algorithm.
 
@@ -18,7 +21,16 @@ class Minimax:
 
     def min_play(self, g, s, p, depth):
         '''
-        Return the smallest value out of all of the child states
+        Get the smallest value of all the child nodes
+
+        Args:
+            g (Game): The game
+            s (any): The state of the game upon execution
+            p (int): The current player (who is about to make a move)
+            depth (int): The current depth of the search tree
+
+        Returns:
+            int: The smallest value of all the child states
         '''
         actions = g.action_space(s)
         if g.terminal(s) or depth > self.horizon:
@@ -27,7 +39,16 @@ class Minimax:
 
     def max_play(self, g, s, p, depth):
         '''
-        Return the largest value out of all of the child states
+        Get the largest value of all the child nodes
+
+        Args:
+            g (Game): The game
+            s (any): The state of the game upon execution
+            p (int): The current player (who is about to make a move)
+            depth (int): The current depth of the search tree
+
+        Returns:
+            int: The largest value of all the child states
         '''
         actions = g.action_space(s)
         if g.terminal(s) or depth > self.horizon:

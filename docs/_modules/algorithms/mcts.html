@@ -154,12 +154,13 @@
 <span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">choice</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="k">import</span> <span class="n">tqdm</span>
 
+<span class="kn">from</span> <span class="nn">gameai.core</span> <span class="k">import</span> <span class="n">Algorithm</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">assign_rewards</span>
 
 <span class="n">DEFAULT_C_PUNT</span> <span class="o">=</span> <span class="mf">1.4</span>
 
 
-<div class="viewcode-block" id="MCTS"><a class="viewcode-back" href="../../api/algorithms.html#algorithms.MCTS">[docs]</a><span class="k">class</span> <span class="nc">MCTS</span><span class="p">:</span>
+<div class="viewcode-block" id="MCTS"><a class="viewcode-back" href="../../api/algorithms.html#algorithms.MCTS">[docs]</a><span class="k">class</span> <span class="nc">MCTS</span><span class="p">(</span><span class="n">Algorithm</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Implementation of a Monte Carlo Tree Search. We want to learn how to play</span>
 <span class="sd">    a game by keeping track of the best action in any state. We will do this</span>
