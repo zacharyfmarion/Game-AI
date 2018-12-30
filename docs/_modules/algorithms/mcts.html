@@ -294,6 +294,19 @@
 
         <span class="k">return</span> <span class="p">(</span><span class="n">best_move</span><span class="p">,</span> <span class="n">expand</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="MCTS.pi"><a class="viewcode-back" href="../../api/algorithms.html#algorithms.MCTS.pi">[docs]</a>    <span class="k">def</span> <span class="nf">pi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Return the favorability of each action in a given state</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            g (Game): The game</span>
+<span class="sd">            s (any): The state to evaluate</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :obj:`list` of :obj:`float`: The favorabiltiy of each action</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">actions</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">action_space</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="MCTS.update"><a class="viewcode-back" href="../../api/algorithms.html#algorithms.MCTS.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">examples</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Backpropagate the result of the training episodes</span>

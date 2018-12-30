@@ -28,7 +28,7 @@ class MCTS(Algorithm):
         self.wins = {}
         self.plays = {}
 
-    def search(self, g, num_iters=100, verbose=False, c_punt=DEFAULT_C_PUNT):
+    def search(self, g, num_iters=100, verbose=False, nnet=None, c_punt=DEFAULT_C_PUNT):
         '''
         Play out a certain number of games, each time updating our win and play
         counts for any state that we visit during the game. As we continue to
@@ -39,28 +39,32 @@ class MCTS(Algorithm):
             g (Game): Game to train on
             num_iters (int): Number of search iterations
             verbose (bool): Whether or not to render a progress bar
+            nnet (Network): Optional nework to be used for the policy instead
+                of a naive random playout
             c_punt (float): The degree of exploration. Defaults to 1.4
         '''
         if verbose:
             for _ in tqdm(range(num_iters)):
-                self.execute_episode(g, c_punt=c_punt)
+                self.execute_episode(g, nnet=nnet, c_punt=c_punt)
         else:
             for _ in range(num_iters):
-                self.execute_episode(g, c_punt=c_punt)
+                self.execute_episode(g, nnet=nnet, c_punt=c_punt)
 
-    def execute_episode(self, g, c_punt=DEFAULT_C_PUNT):
+    def execute_episode(self, g, nnet=None, c_punt=DEFAULT_C_PUNT):
         '''
         Execute a single iteration of the search and update the internal state
         based on the generated examples
 
         Args:
             g (Game): The game
+            nnet (Network): Optional nework to be used for the policy instead
+                of a naive random playout
             c_punt (float): The degree of exploration. Defaults to 1.4
         '''
-        examples = self.search_episode(g, c_punt=c_punt)
+        examples = self.search_episode(g, nnet=nnet, c_punt=c_punt)
         self.update(examples)
 
-    def search_episode(self, g, c_punt=DEFAULT_C_PUNT):
+    def search_episode(self, g, nnet=None, c_punt=DEFAULT_C_PUNT):
         '''
         We play a game by starting in the boards starting state and then
         choosing a random move. We then move to the next state, keeping
@@ -70,6 +74,8 @@ class MCTS(Algorithm):
 
         Args:
             g (Game): Game to search
+            nnet (Network): Optional nework to be used for the policy instead
+                of a naive random playout
             c_punt (float): The degree of exploration. Defaults to 1.4
 
         Returns:
@@ -92,6 +98,11 @@ class MCTS(Algorithm):
 
             if expand:
                 # Do a random playout until we reach a terminal state
+
+                # TODO: If it is a network use the policy to choose an action
+                # instead of just choosing a truly random action...not sure
+                # how much of this should be done in the agent???
+
                 winner = self.random_playout(g, s, p)
                 examples = assign_rewards(examples, winner)
                 return examples
@@ -141,6 +152,19 @@ class MCTS(Algorithm):
             expand = True
 
         return (best_move, expand)
+
+    def pi(self, g, s):
+        '''
+        Return the favorability of each action in a given state
+
+        Args:
+            g (Game): The game
+            s (any): The state to evaluate
+
+        Returns:
+            :obj:`list` of :obj:`float`: The favorabiltiy of each action
+        '''
+        actions = g.action_space(s)
 
     def update(self, examples):
         '''

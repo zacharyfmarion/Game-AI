@@ -10,8 +10,8 @@ class Minimax(Algorithm):
             is set then the game's hueristic is used
     '''
 
-    def __init__(self, **kwargs):
-        self.horizon = kwargs.get('horizon', float('inf'))
+    def __init__(self, horizon=float('inf')):
+        self.horizon = horizon
 
     def best_action(self, g, s, p):
         actions = g.action_space(s)
