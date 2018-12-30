@@ -50,9 +50,7 @@ class Arena:
         num_episodes = kwargs.get('num_episodes', 10)
         verbose = kwargs.get('verbose', False)
         for _ in range(num_episodes):
-            winner = self.play_game(verbose)
-            if winner in [p.player_id for p in self.players]:
-                self.wins[winner] += 1
+            self.play_game(verbose)
 
     def statistics(self):
         '''
@@ -92,14 +90,22 @@ class Arena:
         starting_player = choice([p.player_id for p in self.players])
         player = starting_player
 
+        if verbose:
+            print("Player {} going first".format(player))
+
         # Play out the full game
         while not self.game.terminal(state):
-            action = self.players[player].action(
-                self.game, state, starting_player != 0)
-            state[action] = player
             if verbose:
                 print(self.game.to_readable_string(state), "\n")
+            action = self.players[player].action(
+                self.game, state, starting_player != 0)
+            state = self.game.next_state(state, action, player)
             player = 1 - player
 
         self.games_played += 1
-        return self.game.winner(state)
+        winner = self.game.winner(state)
+
+        if winner in [p.player_id for p in self.players]:
+            self.wins[winner] += 1
+
+        return winner

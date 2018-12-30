@@ -38,21 +38,18 @@ class MCTS:
             g (Game): Game to train on
         '''
         num_iters = kwargs.get('num_iters', 100)
-        num_episodes = kwargs.get('num_episodes', 100)
         verbose = kwargs.get('verbose', False)
         c_punt = kwargs.get('c_punt', DEFAULT_C_PUNT)
 
         if verbose:
             for _ in tqdm(range(num_iters)):
-                self.search_episodes(g, num_episodes, c_punt)
+                self.execute_episode(g, c_punt)
         else:
             for _ in range(num_iters):
-                self.search_episodes(g, num_episodes, c_punt)
+                self.execute_episode(g, c_punt)
 
-    def search_episodes(self, g, num_episodes, c_punt):
-        examples = []
-        for _ in range(num_episodes):
-            examples += self.search_episode(g, c_punt=c_punt)
+    def execute_episode(self, g, c_punt):
+        examples = self.search_episode(g, c_punt=c_punt)
         self.update(examples)
 
     def search_episode(self, g, **kwargs):
@@ -70,7 +67,7 @@ class MCTS:
         examples = []
         while True:
             # Update visited with the next state
-            a = self.monte_carlo_action(g, s, p, c_punt)
+            a, expand = self.monte_carlo_action(g, s, p, c_punt)
             s = g.next_state(s, a, p)
             examples.append([p, g.to_hash(s), None])
             p = 1 - p
@@ -78,17 +75,48 @@ class MCTS:
                 examples = assign_rewards(examples, g.winner(s))
                 return examples
 
+            if expand:
+                # Do a random playout until we reach a terminal state
+                winner = self.random_playout(g, s, p)
+                examples = assign_rewards(examples, winner)
+                return examples
+
+    def random_playout(self, g, s, p):
+        '''
+        Perform a random playout and return the winner
+        '''
+        # TODO: Make this configurable
+        max_moves = 1000
+        for _ in range(max_moves):
+            a = choice(g.action_space(s))
+            s = g.next_state(s, a, p)
+            p = 1 - p
+            if g.terminal(s):
+                return g.winner(s)
+        return -1
+
     def monte_carlo_action(self, g, s, p, c_punt):
         '''
         Choose an action during self play based on the UCB1 algorithm. Instead of just
         choosing the action that led to the most wins in the past, we choose the action
         that balances this concern with exploration
+
+        Args:
+            g (Game): The game
+            s (any): The state of the game
+            p (int): The player who is about to make a move
+            c_punt (float): The degree of exploration
+
+        Returns:
+            tuple: Tuple :code:`(best_move, expand)`, where playout is a boolean denoting
+                whether or not the expansion phase has begun
         '''
         actions = g.action_space(s)
+        expand = False
 
         # Stop out early if there is only one choice
         if len(actions) == 1:
-            return actions[0]
+            return actions[0], False
 
         next_state_hashes = [g.to_hash(g.next_state(s, a, p)) for a in actions]
         best_move = None
@@ -109,8 +137,9 @@ class MCTS:
             best_move = actions[next_move_index]
         else:
             best_move = choice(actions)
+            expand = True
 
-        return best_move
+        return (best_move, expand)
 
     def update(self, examples):
         '''

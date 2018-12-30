@@ -206,6 +206,37 @@ number of times the player made a move in the given state</p>
 <dd><p>Choose an action during self play based on the UCB1 algorithm. Instead of just
 choosing the action that led to the most wins in the past, we choose the action
 that balances this concern with exploration</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>g</strong> (<a class="reference internal" href="core.html#core.Game" title="core.Game"><em>Game</em></a>) – The game</li>
+<li><strong>s</strong> (<em>any</em>) – The state of the game</li>
+<li><strong>p</strong> (<em>int</em>) – The player who is about to make a move</li>
+<li><strong>c_punt</strong> (<em>float</em>) – The degree of exploration</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>Tuple <code class="code docutils literal notranslate"><span class="pre">(best_move,</span> <span class="pre">expand)</span></code>, where playout is a boolean denoting</dt>
+<dd><p class="first last">whether or not the expansion phase has begun</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">tuple</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="algorithms.MCTS.random_playout">
+<code class="descname">random_playout</code><span class="sig-paren">(</span><em>g</em>, <em>s</em>, <em>p</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/algorithms/mcts.html#MCTS.random_playout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#algorithms.MCTS.random_playout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a random playout and return the winner</p>
 </dd></dl>
 
 <dl class="method">

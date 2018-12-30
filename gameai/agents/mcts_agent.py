@@ -4,7 +4,7 @@ from gameai.core import TrainableAgent
 
 class MCTSAgent(TrainableAgent):
     '''
-    Agent that uses Monte Carlo Tree Search (MCTS) 
+    Agent that uses Monte Carlo Tree Search (MCTS)
 
     Attributes:
         mcts (MTCS): The mcts search class
