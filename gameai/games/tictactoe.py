@@ -50,10 +50,6 @@ class TicTacToe(Game):
             return -1
         return self.heuristic(s)
 
-    def heuristic(self, _):
-        ''' Stubbed for now '''
-        return 0
-
     def next_state(self, s, a, p):
         copy = s.copy()
         copy[a] = p
@@ -71,7 +67,13 @@ class TicTacToe(Game):
     def to_hash(self, s):
         return hash(tuple(s))
 
-    def is_winner(self, s, p):
+    @staticmethod
+    def heuristic(_):
+        ''' Stubbed for now '''
+        return 0
+
+    @staticmethod
+    def is_winner(s, p):
         '''
         Return whether a particular player has won the game. Ideally this would
         be generalized to an nxn board.
@@ -85,6 +87,7 @@ class TicTacToe(Game):
                 (s[6] == p and s[4] == p and s[2] == p) or
                 (s[8] == p and s[4] == p and s[0] == p))
 
-    def stringify_player(self, tile):
+    @staticmethod
+    def stringify_player(tile):
         mapping = dict(enumerate(['X', 'O']))
         return mapping.get(tile, ' ')

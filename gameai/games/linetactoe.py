@@ -3,9 +3,11 @@ from gameai.core import Game
 
 class LineTacToe(Game):
     '''
-    Implements a 1x4 tictactoe-like, with state represented as an array of length 4.
+    Implements a 1x3 tictactoe-like, with state represented as an array of length 3.
     The goal of the game is to get two consecutive xs or os. For example, [o, o, x]
-    is winning for o.
+    is winning for o. Note that whoever starts the game should win, every time, as
+    going in the center will win the game. However this is a good game to test new
+    agent / algorithm implementations as the entire state space is only 11 states.
 
     Examples:
         >>> LineTacToe().initial_state()
@@ -42,10 +44,6 @@ class LineTacToe(Game):
             return -1
         return self.heuristic(s)
 
-    def heuristic(self, _):
-        ''' Stubbed for now '''
-        return 0
-
     def next_state(self, s, a, p):
         copy = s.copy()
         copy[a] = p
@@ -54,7 +52,13 @@ class LineTacToe(Game):
     def to_hash(self, s):
         return hash(tuple(s))
 
-    def is_winner(self, s, p):
+    @staticmethod
+    def heuristic(_):
+        ''' Stubbed for now '''
+        return 0
+
+    @staticmethod
+    def is_winner(s, p):
         '''
         Return whether a particular player has won the game. Ideally this would
         be generalized to a 1xn board.

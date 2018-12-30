@@ -197,7 +197,45 @@ number of times the player made a move in the given state</p>
 <dl class="method">
 <dt id="algorithms.MCTS.best_action">
 <code class="descname">best_action</code><span class="sig-paren">(</span><em>g</em>, <em>s</em>, <em>p</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/algorithms/mcts.html#MCTS.best_action"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#algorithms.MCTS.best_action" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the best action for a given player in a given game state</p>
+<dd><p>Get the best action for a given player in a given game state</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>g</strong> (<a class="reference internal" href="core.html#core.Game" title="core.Game"><em>Game</em></a>) – The game</li>
+<li><strong>s</strong> (<em>state</em>) – The current state of the game</li>
+<li><strong>p</strong> (<em>int</em>) – The current player</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The best action given the current knowledge of the game</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="algorithms.MCTS.execute_episode">
+<code class="descname">execute_episode</code><span class="sig-paren">(</span><em>g</em>, <em>c_punt=1.4</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/algorithms/mcts.html#MCTS.execute_episode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#algorithms.MCTS.execute_episode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a single iteration of the search and update the internal state
+based on the generated examples</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>g</strong> (<a class="reference internal" href="core.html#core.Game" title="core.Game"><em>Game</em></a>) – The game</li>
+<li><strong>c_punt</strong> (<em>float</em>) – The degree of exploration. Defaults to 1.4</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -233,15 +271,35 @@ that balances this concern with exploration</p>
 </table>
 </dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="algorithms.MCTS.random_playout">
-<code class="descname">random_playout</code><span class="sig-paren">(</span><em>g</em>, <em>s</em>, <em>p</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/algorithms/mcts.html#MCTS.random_playout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#algorithms.MCTS.random_playout" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">random_playout</code><span class="sig-paren">(</span><em>g</em>, <em>s</em>, <em>p</em>, <em>max_moves=1000</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/algorithms/mcts.html#MCTS.random_playout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#algorithms.MCTS.random_playout" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a random playout and return the winner</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>g</strong> (<a class="reference internal" href="core.html#core.Game" title="core.Game"><em>Game</em></a>) – The game</li>
+<li><strong>s</strong> (<em>any</em>) – The state of the game to start the playout from</li>
+<li><strong>p</strong> (<em>player</em>) – The player whose turn it currently is</li>
+<li><strong>max_moves</strong> (<em>int</em>) – Maximum number of moves before the function exits</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The winner of the game, or -1 if there is not one</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="algorithms.MCTS.search">
-<code class="descname">search</code><span class="sig-paren">(</span><em>g</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/algorithms/mcts.html#MCTS.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#algorithms.MCTS.search" title="Permalink to this definition">¶</a></dt>
+<code class="descname">search</code><span class="sig-paren">(</span><em>g</em>, <em>num_iters=100</em>, <em>verbose=False</em>, <em>c_punt=1.4</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/algorithms/mcts.html#MCTS.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#algorithms.MCTS.search" title="Permalink to this definition">¶</a></dt>
 <dd><p>Play out a certain number of games, each time updating our win and play
 counts for any state that we visit during the game. As we continue to
 play, num_wins / num_plays for a given state should begin to converge on
@@ -250,7 +308,13 @@ the true optimality of a state</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>g</strong> (<a class="reference internal" href="core.html#core.Game" title="core.Game"><em>Game</em></a>) – Game to train on</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>g</strong> (<a class="reference internal" href="core.html#core.Game" title="core.Game"><em>Game</em></a>) – Game to train on</li>
+<li><strong>num_iters</strong> (<em>int</em>) – Number of search iterations</li>
+<li><strong>verbose</strong> (<em>bool</em>) – Whether or not to render a progress bar</li>
+<li><strong>c_punt</strong> (<em>float</em>) – The degree of exploration. Defaults to 1.4</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -258,18 +322,50 @@ the true optimality of a state</p>
 
 <dl class="method">
 <dt id="algorithms.MCTS.search_episode">
-<code class="descname">search_episode</code><span class="sig-paren">(</span><em>g</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/algorithms/mcts.html#MCTS.search_episode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#algorithms.MCTS.search_episode" title="Permalink to this definition">¶</a></dt>
+<code class="descname">search_episode</code><span class="sig-paren">(</span><em>g</em>, <em>c_punt=1.4</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/algorithms/mcts.html#MCTS.search_episode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#algorithms.MCTS.search_episode" title="Permalink to this definition">¶</a></dt>
 <dd><p>We play a game by starting in the boards starting state and then
 choosing a random move. We then move to the next state, keeping
 track of which moves we chose. At the end of the game we go through
 our visited list and update the values of wins and plays so that we
 have a better understanding of which states are good and which are bad</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>g</strong> (<a class="reference internal" href="core.html#core.Game" title="core.Game"><em>Game</em></a>) – Game to search</li>
+<li><strong>c_punt</strong> (<em>float</em>) – The degree of exploration. Defaults to 1.4</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>List of examples where each entry is of the format</dt>
+<dd><p class="first last"><code class="code docutils literal notranslate"><span class="pre">[player,</span> <span class="pre">state_hash,</span> <span class="pre">reward]</span></code></p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="algorithms.MCTS.update">
 <code class="descname">update</code><span class="sig-paren">(</span><em>examples</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/algorithms/mcts.html#MCTS.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#algorithms.MCTS.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Backpropagate the result of the training episodes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>examples</strong> (<em>list</em>) – List of examples where each entry is of the format
+<code class="code docutils literal notranslate"><span class="pre">[player,</span> <span class="pre">state_hash,</span> <span class="pre">reward]</span></code></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

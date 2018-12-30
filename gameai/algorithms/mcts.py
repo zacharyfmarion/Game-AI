@@ -27,7 +27,7 @@ class MCTS:
         self.wins = {}
         self.plays = {}
 
-    def search(self, g, **kwargs):
+    def search(self, g, num_iters=100, verbose=False, c_punt=DEFAULT_C_PUNT):
         '''
         Play out a certain number of games, each time updating our win and play
         counts for any state that we visit during the game. As we continue to
@@ -36,32 +36,45 @@ class MCTS:
 
         Args:
             g (Game): Game to train on
+            num_iters (int): Number of search iterations
+            verbose (bool): Whether or not to render a progress bar
+            c_punt (float): The degree of exploration. Defaults to 1.4
         '''
-        num_iters = kwargs.get('num_iters', 100)
-        verbose = kwargs.get('verbose', False)
-        c_punt = kwargs.get('c_punt', DEFAULT_C_PUNT)
-
         if verbose:
             for _ in tqdm(range(num_iters)):
-                self.execute_episode(g, c_punt)
+                self.execute_episode(g, c_punt=c_punt)
         else:
             for _ in range(num_iters):
-                self.execute_episode(g, c_punt)
+                self.execute_episode(g, c_punt=c_punt)
 
-    def execute_episode(self, g, c_punt):
+    def execute_episode(self, g, c_punt=DEFAULT_C_PUNT):
+        '''
+        Execute a single iteration of the search and update the internal state
+        based on the generated examples
+
+        Args:
+            g (Game): The game
+            c_punt (float): The degree of exploration. Defaults to 1.4
+        '''
         examples = self.search_episode(g, c_punt=c_punt)
         self.update(examples)
 
-    def search_episode(self, g, **kwargs):
+    def search_episode(self, g, c_punt=DEFAULT_C_PUNT):
         '''
         We play a game by starting in the boards starting state and then
         choosing a random move. We then move to the next state, keeping
         track of which moves we chose. At the end of the game we go through
         our visited list and update the values of wins and plays so that we
         have a better understanding of which states are good and which are bad
-        '''
-        c_punt = kwargs.get('c_punt', DEFAULT_C_PUNT)
 
+        Args:
+            g (Game): Game to search
+            c_punt (float): The degree of exploration. Defaults to 1.4
+
+        Returns:
+            list: List of examples where each entry is of the format
+                :code:`[player, state_hash, reward]`
+        '''
         s = g.initial_state()
         p = 0
         examples = []
@@ -71,6 +84,7 @@ class MCTS:
             s = g.next_state(s, a, p)
             examples.append([p, g.to_hash(s), None])
             p = 1 - p
+
             if g.terminal(s):
                 examples = assign_rewards(examples, g.winner(s))
                 return examples
@@ -80,20 +94,6 @@ class MCTS:
                 winner = self.random_playout(g, s, p)
                 examples = assign_rewards(examples, winner)
                 return examples
-
-    def random_playout(self, g, s, p):
-        '''
-        Perform a random playout and return the winner
-        '''
-        # TODO: Make this configurable
-        max_moves = 1000
-        for _ in range(max_moves):
-            a = choice(g.action_space(s))
-            s = g.next_state(s, a, p)
-            p = 1 - p
-            if g.terminal(s):
-                return g.winner(s)
-        return -1
 
     def monte_carlo_action(self, g, s, p, c_punt):
         '''
@@ -144,6 +144,10 @@ class MCTS:
     def update(self, examples):
         '''
         Backpropagate the result of the training episodes
+
+        Args:
+            examples (list): List of examples where each entry is of the format
+                :code:`[player, state_hash, reward]`
         '''
         for [p, s, reward] in examples:
             self.plays[(p, s)] = self.plays.get((p, s), 0) + 1
@@ -151,7 +155,15 @@ class MCTS:
 
     def best_action(self, g, s, p):
         '''
-        Returns the best action for a given player in a given game state
+        Get the best action for a given player in a given game state
+
+        Args:
+            g (Game): The game
+            s (state): The current state of the game
+            p (int): The current player
+
+        Returns:
+            int: The best action given the current knowledge of the game
         '''
         actions = g.action_space(s)
 
@@ -174,3 +186,25 @@ class MCTS:
             best_move = choice(actions)
 
         return best_move
+
+    @staticmethod
+    def random_playout(g, s, p, max_moves=1000):
+        '''
+        Perform a random playout and return the winner
+
+        Args:
+            g (Game): The game
+            s (any): The state of the game to start the playout from
+            p (player): The player whose turn it currently is
+            max_moves (int): Maximum number of moves before the function exits
+
+        Returns:
+            int: The winner of the game, or -1 if there is not one
+        '''
+        for _ in range(max_moves):
+            a = choice(g.action_space(s))
+            s = g.next_state(s, a, p)
+            p = 1 - p
+            if g.terminal(s):
+                return g.winner(s)
+        return -1

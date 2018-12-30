@@ -179,7 +179,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">wins</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plays</span> <span class="o">=</span> <span class="p">{}</span>
 
-<div class="viewcode-block" id="MCTS.search"><a class="viewcode-back" href="../../api/algorithms.html#algorithms.MCTS.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="MCTS.search"><a class="viewcode-back" href="../../api/algorithms.html#algorithms.MCTS.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">num_iters</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">c_punt</span><span class="o">=</span><span class="n">DEFAULT_C_PUNT</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Play out a certain number of games, each time updating our win and play</span>
 <span class="sd">        counts for any state that we visit during the game. As we continue to</span>
@@ -188,32 +188,45 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            g (Game): Game to train on</span>
+<span class="sd">            num_iters (int): Number of search iterations</span>
+<span class="sd">            verbose (bool): Whether or not to render a progress bar</span>
+<span class="sd">            c_punt (float): The degree of exploration. Defaults to 1.4</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">num_iters</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;num_iters&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-        <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;verbose&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="n">c_punt</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;c_punt&#39;</span><span class="p">,</span> <span class="n">DEFAULT_C_PUNT</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_iters</span><span class="p">)):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">execute_episode</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">c_punt</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">execute_episode</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">c_punt</span><span class="o">=</span><span class="n">c_punt</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_iters</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">execute_episode</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">c_punt</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">execute_episode</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">c_punt</span><span class="o">=</span><span class="n">c_punt</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">execute_episode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">c_punt</span><span class="p">):</span>
+<div class="viewcode-block" id="MCTS.execute_episode"><a class="viewcode-back" href="../../api/algorithms.html#algorithms.MCTS.execute_episode">[docs]</a>    <span class="k">def</span> <span class="nf">execute_episode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">c_punt</span><span class="o">=</span><span class="n">DEFAULT_C_PUNT</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Execute a single iteration of the search and update the internal state</span>
+<span class="sd">        based on the generated examples</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            g (Game): The game</span>
+<span class="sd">            c_punt (float): The degree of exploration. Defaults to 1.4</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">examples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_episode</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">c_punt</span><span class="o">=</span><span class="n">c_punt</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">examples</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">examples</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MCTS.search_episode"><a class="viewcode-back" href="../../api/algorithms.html#algorithms.MCTS.search_episode">[docs]</a>    <span class="k">def</span> <span class="nf">search_episode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="MCTS.search_episode"><a class="viewcode-back" href="../../api/algorithms.html#algorithms.MCTS.search_episode">[docs]</a>    <span class="k">def</span> <span class="nf">search_episode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">c_punt</span><span class="o">=</span><span class="n">DEFAULT_C_PUNT</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        We play a game by starting in the boards starting state and then</span>
 <span class="sd">        choosing a random move. We then move to the next state, keeping</span>
 <span class="sd">        track of which moves we chose. At the end of the game we go through</span>
 <span class="sd">        our visited list and update the values of wins and plays so that we</span>
 <span class="sd">        have a better understanding of which states are good and which are bad</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">c_punt</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;c_punt&#39;</span><span class="p">,</span> <span class="n">DEFAULT_C_PUNT</span><span class="p">)</span>
 
+<span class="sd">        Args:</span>
+<span class="sd">            g (Game): Game to search</span>
+<span class="sd">            c_punt (float): The degree of exploration. Defaults to 1.4</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: List of examples where each entry is of the format</span>
+<span class="sd">                :code:`[player, state_hash, reward]`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">initial_state</span><span class="p">()</span>
         <span class="n">p</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">examples</span> <span class="o">=</span> <span class="p">[]</span>
@@ -223,6 +236,7 @@
             <span class="n">s</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">next_state</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
             <span class="n">examples</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">p</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">to_hash</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="kc">None</span><span class="p">])</span>
             <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">p</span>
+
             <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">terminal</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
                 <span class="n">examples</span> <span class="o">=</span> <span class="n">assign_rewards</span><span class="p">(</span><span class="n">examples</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">winner</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
                 <span class="k">return</span> <span class="n">examples</span>
@@ -232,20 +246,6 @@
                 <span class="n">winner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_playout</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
                 <span class="n">examples</span> <span class="o">=</span> <span class="n">assign_rewards</span><span class="p">(</span><span class="n">examples</span><span class="p">,</span> <span class="n">winner</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">examples</span></div>
-
-<div class="viewcode-block" id="MCTS.random_playout"><a class="viewcode-back" href="../../api/algorithms.html#algorithms.MCTS.random_playout">[docs]</a>    <span class="k">def</span> <span class="nf">random_playout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Perform a random playout and return the winner</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="c1"># TODO: Make this configurable</span>
-        <span class="n">max_moves</span> <span class="o">=</span> <span class="mi">1000</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_moves</span><span class="p">):</span>
-            <span class="n">a</span> <span class="o">=</span> <span class="n">choice</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">action_space</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">next_state</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
-            <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">p</span>
-            <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">terminal</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">winner</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
 
 <div class="viewcode-block" id="MCTS.monte_carlo_action"><a class="viewcode-back" href="../../api/algorithms.html#algorithms.MCTS.monte_carlo_action">[docs]</a>    <span class="k">def</span> <span class="nf">monte_carlo_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">c_punt</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -296,6 +296,10 @@
 <div class="viewcode-block" id="MCTS.update"><a class="viewcode-back" href="../../api/algorithms.html#algorithms.MCTS.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">examples</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Backpropagate the result of the training episodes</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            examples (list): List of examples where each entry is of the format</span>
+<span class="sd">                :code:`[player, state_hash, reward]`</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">for</span> <span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">reward</span><span class="p">]</span> <span class="ow">in</span> <span class="n">examples</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">plays</span><span class="p">[(</span><span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plays</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
@@ -303,7 +307,15 @@
 
 <div class="viewcode-block" id="MCTS.best_action"><a class="viewcode-back" href="../../api/algorithms.html#algorithms.MCTS.best_action">[docs]</a>    <span class="k">def</span> <span class="nf">best_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Returns the best action for a given player in a given game state</span>
+<span class="sd">        Get the best action for a given player in a given game state</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            g (Game): The game</span>
+<span class="sd">            s (state): The current state of the game</span>
+<span class="sd">            p (int): The current player</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The best action given the current knowledge of the game</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">actions</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">action_space</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 
@@ -325,7 +337,29 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">best_move</span> <span class="o">=</span> <span class="n">choice</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">best_move</span></div></div>
+        <span class="k">return</span> <span class="n">best_move</span></div>
+
+<div class="viewcode-block" id="MCTS.random_playout"><a class="viewcode-back" href="../../api/algorithms.html#algorithms.MCTS.random_playout">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">random_playout</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">max_moves</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Perform a random playout and return the winner</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            g (Game): The game</span>
+<span class="sd">            s (any): The state of the game to start the playout from</span>
+<span class="sd">            p (player): The player whose turn it currently is</span>
+<span class="sd">            max_moves (int): Maximum number of moves before the function exits</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The winner of the game, or -1 if there is not one</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_moves</span><span class="p">):</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">choice</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">action_space</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">next_state</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">p</span>
+            <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">terminal</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">winner</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div></div>
 </pre></div>
 
            </div>
