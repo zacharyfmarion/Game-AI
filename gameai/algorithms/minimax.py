@@ -17,12 +17,18 @@ class Minimax:
         return actions[rewards.index(max(rewards))]
 
     def min_play(self, g, s, p, depth):
+        '''
+        Return the smallest value out of all of the child states
+        '''
         actions = g.action_space(s)
         if g.terminal(s) or depth > self.horizon:
             return g.reward(s, 1-p)
         return min([self.max_play(g, g.next_state(s, a, p), 1-p, depth+1) for a in actions])
 
     def max_play(self, g, s, p, depth):
+        '''
+        Return the largest value out of all of the child states
+        '''
         actions = g.action_space(s)
         if g.terminal(s) or depth > self.horizon:
             return g.reward(s, p)
