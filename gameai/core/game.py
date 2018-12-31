@@ -11,6 +11,13 @@ class Game:
         '''
         raise NotImplementedError
 
+    @property
+    def total_action_space_size(self):
+        '''
+        Return the total size of the action space
+        '''
+        raise NotImplementedError
+
     def action_space(self, s):
         '''
         For any given state returns a list of all possible valid actions

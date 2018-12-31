@@ -3,7 +3,6 @@ from random import choice
 from tqdm import tqdm
 
 from gameai.core import Algorithm
-from .utils import assign_rewards
 
 DEFAULT_C_PUNT = 1.4
 
@@ -43,12 +42,9 @@ class MCTS(Algorithm):
                 of a naive random playout
             c_punt (float): The degree of exploration. Defaults to 1.4
         '''
-        if verbose:
-            for _ in tqdm(range(num_iters)):
-                self.execute_episode(g, nnet=nnet, c_punt=c_punt)
-        else:
-            for _ in range(num_iters):
-                self.execute_episode(g, nnet=nnet, c_punt=c_punt)
+        iter_wrapper = tqdm if verbose else lambda x: x
+        for _ in iter_wrapper(range(num_iters)):
+            self.execute_episode(g, nnet=nnet, c_punt=c_punt)
 
     def execute_episode(self, g, nnet=None, c_punt=DEFAULT_C_PUNT):
         '''
@@ -80,34 +76,34 @@ class MCTS(Algorithm):
 
         Returns:
             list: List of examples where each entry is of the format
-                :code:`[player, state_hash, reward]`
+                :code:`[state_hash, action, reward]`
         '''
         s = g.initial_state()
         p = 0
         examples = []
         while True:
             # Update visited with the next state
-            a, expand = self.monte_carlo_action(g, s, p, c_punt)
+            a, expand = self.monte_carlo_action(g, s, nnet, c_punt)
+            examples.append([g.to_hash(s), a, None])
             s = g.next_state(s, a, p)
-            examples.append([p, g.to_hash(s), None])
             p = 1 - p
 
             if g.terminal(s):
-                examples = assign_rewards(examples, g.winner(s))
+                examples = self.assign_rewards(examples, g.winner(s))
                 return examples
 
             if expand:
-                # Do a random playout until we reach a terminal state
-
-                # TODO: If it is a network use the policy to choose an action
-                # instead of just choosing a truly random action...not sure
-                # how much of this should be done in the agent???
-
-                winner = self.random_playout(g, s, p)
-                examples = assign_rewards(examples, winner)
+                # Do a random playout until we reach a terminal state. If a network
+                # is provided we instead use it's predicted outcome
+                winner = None
+                if nnet:
+                    _, winner = nnet.predict_single(s)
+                else:
+                    winner = self.random_playout(g, s, p)
+                examples = self.assign_rewards(examples, winner)
                 return examples
 
-    def monte_carlo_action(self, g, s, p, c_punt):
+    def monte_carlo_action(self, g, s, nnet, c_punt):
         '''
         Choose an action during self play based on the UCB1 algorithm. Instead of just
         choosing the action that led to the most wins in the past, we choose the action
@@ -117,6 +113,7 @@ class MCTS(Algorithm):
             g (Game): The game
             s (any): The state of the game
             p (int): The player who is about to make a move
+            nnet (Network): A network that serves as the default policy
             c_punt (float): The degree of exploration
 
         Returns:
@@ -124,61 +121,88 @@ class MCTS(Algorithm):
                 whether or not the expansion phase has begun
         '''
         actions = g.action_space(s)
+        s_hash = g.to_hash(s)
         expand = False
 
         # Stop out early if there is only one choice
         if len(actions) == 1:
             return actions[0], False
 
-        next_state_hashes = [g.to_hash(g.next_state(s, a, p)) for a in actions]
         best_move = None
 
         # We first check that this player has been in each of the subsequent states
         # If they have not, then we simply choose a random action
-        if all((p, s_hash) in self.plays for s_hash in next_state_hashes):
+        if all((s_hash, a) in self.plays for a in actions):
 
             log_total = math.log(
-                sum(self.plays[(p, s_hash)] for s_hash in next_state_hashes))
+                sum(self.plays[(s_hash, a)] for a in actions))
             values = [
-                (self.wins[(p, s_hash)] / self.plays[(p, s_hash)]) +
-                c_punt * math.sqrt(log_total / self.plays[(p, s_hash)])
-                for s_hash in next_state_hashes
+                (self.wins[(s_hash, a)] / self.plays[(s_hash, a)]) +
+                c_punt * math.sqrt(log_total / self.plays[(s_hash, a)])
+                for a in actions
             ]
 
             next_move_index = values.index(max(values))
             best_move = actions[next_move_index]
         else:
-            best_move = choice(actions)
+            if nnet:
+                policy, _ = nnet.predict_single(s)
+                best_move = policy.indexOf(max(policy))
+            else:
+                best_move = choice(actions)
             expand = True
 
         return (best_move, expand)
 
-    def pi(self, g, s):
+    def policy(self, g, s, temp=1):
         '''
-        Return the favorability of each action in a given state
+        Return the favorability of each action in the games action space.
 
         Args:
             g (Game): The game
             s (any): The state to evaluate
+            temp (float): Temperature of the probabilities
 
         Returns:
             :obj:`list` of :obj:`float`: The favorabiltiy of each action
+
+        Examples:
+            >>> g.total_action_space_size
+            9
+            >>> g.action_space()
+            [1,3,6]
+            >>> mcts.pi(g, s, temp=1)
+            [0, 0.2, 0, 0.5, 0, 0, 0.3, 0, 0]
         '''
-        actions = g.action_space(s)
+        s_hash = g.to_hash(s)
+        counts = [self.wins[s_hash, a] if (
+            s_hash, a) in self.wins else 0 for a in range(g.total_action_space_size)]
+
+        if (sum(counts) == 0):
+            raise ValueError('Cannot call policy before searching')
+
+        # One hot encode
+        if temp == 0:
+            best_move = counts.index(max(counts))
+            return [1 if i == best_move else 0 for i in range(g.total_action_space_size)]
+
+        counts = [count**(1/temp) for count in counts]
+        return [count/float(sum(counts)) for count in counts]
 
     def update(self, examples):
         '''
-        Backpropagate the result of the training episodes
+        Backpropagate the result of the training episodes. This assigns Q-values to
+        each state-action pair
 
         Args:
             examples (list): List of examples where each entry is of the format
                 :code:`[player, state_hash, reward]`
         '''
-        for [p, s, reward] in examples:
-            self.plays[(p, s)] = self.plays.get((p, s), 0) + 1
-            self.wins[(p, s)] = self.wins.get((p, s), 0) + reward
+        for [s, a, reward] in examples:
+            self.plays[(s, a)] = self.plays.get((s, a), 0) + 1
+            self.wins[(s, a)] = self.wins.get((s, a), 0) + reward
 
-    def best_action(self, g, s, p):
+    def best_action(self, g, s, _):
         '''
         Get the best action for a given player in a given game state
 
@@ -191,20 +215,19 @@ class MCTS(Algorithm):
             int: The best action given the current knowledge of the game
         '''
         actions = g.action_space(s)
+        s_hash = g.to_hash(s)
 
         # Stop out early if there is only one choice
         if len(actions) == 1:
             return actions[0]
 
         best_move = None
-        next_state_hashes = [
-            g.to_hash(g.next_state(s, a, p)) for a in actions]
 
         # We first check that this player has been in each of the subsequent states
         # If they have not, then we simply choose a random action
-        if all((p, s_hash) in self.plays for s_hash in next_state_hashes):
-            q_values = [self.wins[(p, s_hash)] / self.plays[(p, s_hash)]
-                        for s_hash in next_state_hashes]
+        if all((s_hash, a) in self.plays for a in actions):
+            q_values = [self.wins[(s_hash, a)] / self.plays[(s_hash, a)]
+                        for a in actions]
             best_move_index = q_values.index(max(q_values))
             best_move = actions[best_move_index]
         else:
@@ -233,3 +256,19 @@ class MCTS(Algorithm):
             if g.terminal(s):
                 return g.winner(s)
         return -1
+
+    @staticmethod
+    def assign_rewards(examples, winner):
+        '''
+        Assign rewards to the examples after the outcome is known. Note that this
+        is always from the perspective of the starting player (0)
+
+        Args:
+            examples (list): List of examples where each entry is of the format
+                :code:`[state_hash, action, None]`
+            winner (int): The winner of the game
+
+        Returns:
+            list: List in the format :code:`[state_hash, action, reward]`
+        '''
+        return [[p, s, 1 if winner == 0 else 0] for [p, s, _] in examples]

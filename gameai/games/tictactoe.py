@@ -23,6 +23,10 @@ class TicTacToe(Game):
     def initial_state(self):
         return [-1 for i in range(9)]
 
+    @property
+    def total_action_space_size(self):
+        return 9
+
     def action_space(self, s):
         return [i for i in range(len(s)) if s[i] == -1]
 

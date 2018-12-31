@@ -14,6 +14,7 @@ setup(
     author_email='zacharyfmarion@gmail.com',
     url='https://github.com/zacharyfmarion/Game-AI',
     license='MIT',
+    python_requires='>=3.0.0',
     install_requires=['tqdm>=4.23.4'],
     extras_require={
         'tests': [
