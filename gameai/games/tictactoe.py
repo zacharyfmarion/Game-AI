@@ -45,14 +45,14 @@ class TicTacToe(Game):
             return 0
         if self.is_winner(s, 1):
             return 1
-        return -1
+        return None
 
     def reward(self, s, p):
         if self.is_winner(s, p):
             return 1
         if self.is_winner(s, 1-p):
             return -1
-        return self.heuristic(s)
+        return 0
 
     def next_state(self, s, a, p):
         copy = s.copy()

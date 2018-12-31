@@ -68,7 +68,7 @@ class MCTS(Algorithm):
         examples = []
         for _ in iter_wrapper(range(num_iters)):
             iter_examples = self.search_episode(
-                g, s, p, nnet=nnet, c_punt=c_punt)
+                g, s.copy(), p, nnet=nnet, c_punt=c_punt)
             self.update(iter_examples)
             examples += iter_examples
         return examples
@@ -102,12 +102,12 @@ class MCTS(Algorithm):
             p = 1 - p
 
             if g.terminal(s):
-                examples = self.assign_rewards(examples, g.winner(s))
+                examples = self.assign_rewards(examples, g.reward(s, 0))
                 return examples
 
+            # Do a random playout until we reach a terminal state. If a network
+            # is provided we instead use it's predicted outcome
             if expand:
-                # Do a random playout until we reach a terminal state. If a network
-                # is provided we instead use it's predicted outcome
                 reward = None
                 if nnet:
                     _, reward = nnet.predict_single(s)
@@ -162,6 +162,34 @@ class MCTS(Algorithm):
 
         return (best_move, False)
 
+    def best_action(self, g, s, _):
+        '''
+        Get the best action for a given player in a given game state
+
+        Args:
+            g (Game): The game
+            s (state): The current state of the game
+            p (int): The current player
+
+        Returns:
+            int: The best action given the current knowledge of the game
+        '''
+        actions = g.action_space(s)
+        untried_actions = self.get_untried_actions(g, s)
+        s_hash = g.to_hash(s)
+
+        # Stop out early if there is only one choice
+        if len(actions) == 1:
+            return actions[0]
+
+        if untried_actions != []:
+            return choice(actions)
+
+        q_values = [self.wins[(s_hash, a)] / self.plays[(s_hash, a)]
+                    for a in actions]
+        best_move_index = q_values.index(max(q_values))
+        return actions[best_move_index]
+
     def policy(self, g, s, temp=1):
         '''
         Return the favorability of each action in the games action space.
@@ -183,10 +211,6 @@ class MCTS(Algorithm):
             [0, 0.2, 0, 0.5, 0, 0, 0.3, 0, 0]
         '''
         s_hash = g.to_hash(s)
-
-        print("WINS:", self.wins)
-        print("PLAYS:", self.plays)
-
         counts = [self.wins[(s_hash, a)] / self.plays[(s_hash, a)] if (
             s_hash, a) in self.wins else 0 for a in range(g.total_action_space_size)]
 
@@ -212,38 +236,11 @@ class MCTS(Algorithm):
         '''
         for [s, a, reward] in examples:
             self.plays[(s, a)] = self.plays.get((s, a), 0) + 1
-            self.wins[(s, a)] = self.wins.get((s, a), 0) + reward
-
-    def best_action(self, g, s, _):
-        '''
-        Get the best action for a given player in a given game state
-
-        Args:
-            g (Game): The game
-            s (state): The current state of the game
-            p (int): The current player
-
-        Returns:
-            int: The best action given the current knowledge of the game
-        '''
-        actions = g.action_space(s)
-        untried_actions = self.get_untried_actions(g, s)
-        s_hash = g.to_hash(s)
-
-        # Stop out early if there is only one choice
-        if len(actions) == 1:
-            return actions[0]
-
-        if untried_actions != []:
-            return choice(actions)
-
-        q_values = [self.wins[(s_hash, a)] / self.plays[(s_hash, a)]
-                    if (s_hash, a) in self.plays else 0 for a in actions]
-        best_move_index = q_values.index(max(q_values))
-        return actions[best_move_index]
+            self.wins[(s, a)] = self.wins.get(
+                (s, a), 0) + (1 if reward > 0 else 0)
 
     @staticmethod
-    def random_playout(g, s, p, max_moves=1000):
+    def random_playout(g, s, p):
         '''
         Perform a random playout and return the winner
 
@@ -254,18 +251,17 @@ class MCTS(Algorithm):
             max_moves (int): Maximum number of moves before the function exits
 
         Returns:
-            int: The winner of the game, or -1 if there is not one
+            int: The reward of the game from the perspective of player 0
         '''
-        for _ in range(max_moves):
+        while True:
             a = choice(g.action_space(s))
             s = g.next_state(s, a, p)
             p = 1 - p
             if g.terminal(s):
-                return g.winner(s)
-        return -1
+                return g.reward(s, 0)
 
     @staticmethod
-    def assign_rewards(examples, winner):
+    def assign_rewards(examples, reward):
         '''
         Assign rewards to the examples after the outcome is known. Note that this
         is always from the perspective of the starting player (0)
@@ -273,9 +269,9 @@ class MCTS(Algorithm):
         Args:
             examples (list): List of examples where each entry is of the format
                 :code:`[state_hash, action, None]`
-            winner (int): The winner of the game
+            reward (int): The reward from the perspective of player 0
 
         Returns:
             list: List in the format :code:`[state_hash, action, reward]`
         '''
-        return [[p, s, 1 if winner == 0 else 0] for [p, s, _] in examples]
+        return [[s_hash, a, reward] for [s_hash, a, _] in examples]
