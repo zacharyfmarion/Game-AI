@@ -1,7 +1,10 @@
 from copy import deepcopy
+from random import shuffle
 from tqdm import tqdm
+import numpy as np
 
 from gameai.core import TrainableAgent
+from gameai.algorithms import MCTS
 
 
 class AlphaZeroAgent(TrainableAgent):
@@ -42,13 +45,28 @@ class AlphaZeroAgent(TrainableAgent):
         '''
         Train a single episode of the network
         '''
-        print('train episode')
+        num_simulations = kwargs.get('num_simulations', 100)
+        p = 0
+        s = g.initial_state()
+        mcts = MCTS()
+        examples = []
+        while True:
+            mcts.search(g, s, p, num_iters=num_simulations, nnet=self.nnet)
+            policy = mcts.policy(g, s)
+            examples.append([s, policy, None])
+            a = np.random.choice(len(policy), p=policy)
+            s = g.next_state(s, a, p)
+            p = 1 - p
+
+            if g.terminal(s):
+                examples = self.assign_rewards(examples, g.winner(s))
+                return examples
 
     def training_params(self, g):
         return self.nnet
 
-    def action(self, g, s, p):
-        pass
+    def action(self, _g, s, _p):
+        return self.nnet.predict_single(s)
 
     @staticmethod
     def copy_and_train(nnet, examples):
@@ -58,14 +76,17 @@ class AlphaZeroAgent(TrainableAgent):
 
         Args:
             nnet (Network): The network to copy
-            examples (list): List of examples of the form TODO
+            examples (list): List of examples of the form :code:`[state, policies, reward]`
+
+        Returns:
+            Network: The network copy
         '''
         new_nnet = deepcopy(nnet)
         new_nnet.train(examples)
         return new_nnet
 
     @staticmethod
-    def pit_networks(g, new_nnet, old_nnet):
+    def pit_networks(g, new_nnet, old_nnet, num_games=50):
         '''
         Pit two networks against eachother in a game
 
@@ -73,9 +94,31 @@ class AlphaZeroAgent(TrainableAgent):
             g (Game): The game the networks are playing
             new_nnet (Network): The network trained on the latest examples
             old_nnet (Network): The previous best network
+            num_games (int): The number of games to play
 
         Returns:
             float: The win percentage of the new network
         '''
-        print("PITTING NETWORKS")
-        return 0
+        num_wins = 0
+        for _ in range(num_games):
+            s = g.initial_state()
+            nets = [new_nnet, old_nnet]
+            shuffle(nets)
+
+            p = 0
+            while not g.terminal(s):
+                a, _ = nets[p].predict_single(s)
+                s = g.next_state(s, a, p)
+                p = 1 - p
+
+            if nets.index(new_nnet) == g.winner(s):
+                num_wins += 1
+
+        return num_wins / float(num_games)
+
+    @staticmethod
+    def assign_rewards(examples, winner):
+        '''
+        TODO
+        '''
+        return [[s, policy, 1 if winner == 0 else 0] for [s, policy, _] in examples]

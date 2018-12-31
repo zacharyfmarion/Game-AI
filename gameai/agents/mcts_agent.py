@@ -14,10 +14,14 @@ class MCTSAgent(TrainableAgent):
         self.mcts = MCTS()
 
     def train(self, g, **kwargs):
-        self.mcts.search(g, **kwargs)
+        s = g.initial_state()
+        p = 0
+        self.mcts.search(g, s, p, **kwargs)
 
     def train_episode(self, g, **kwargs):
-        self.mcts.search_episode(g, **kwargs)
+        s = g.initial_state()
+        p = 0
+        self.mcts.search_episode(g, s, p, **kwargs)
 
     def training_params(self, _):
         return (self.mcts.plays, self.mcts.wins)

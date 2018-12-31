@@ -1,3 +1,4 @@
+import numpy as np
 from tensorflow.keras.layers import Input, Conv2D, Flatten, Dense
 from tensorflow.keras.models import Model
 
@@ -44,12 +45,25 @@ class BasicConvNet(Network):
         Train the network
 
         Args:
-            examples (np.ndarray): TODO
+            examples (list): list of the format [state, policy, reward]
         '''
-        self.model.fit()
+
+        num_epochs = kwargs.get('num_epochs', 50)
+        batch_size = kwargs.get('batch_size', 32)
+
+        x_states = np.array([state for [state, _, _] in examples])
+        y_policies = np.array([policy for [_, policy, _] in examples])
+        y_rewards = np.array([reward for [_, _, reward] in examples])
+
+        self.model.fit(x_states, [y_policies, y_rewards],
+                       epochs=num_epochs, batch_size=batch_size)
 
     def predict(self, inputs, **kwargs):
-        return self.model.predict(inputs)
+        input_shape = list(self.input_shape)
+        input_shape.insert(0, -1)
+        return tuple(self.model.predict(np.array(inputs).reshape(tuple(input_shape))))
 
     def predict_single(self, x, **kwargs):
-        pass
+        policies, rewards = self.predict(
+            np.expand_dims(np.array(x), 1), **kwargs)
+        return (policies[0], rewards[0])

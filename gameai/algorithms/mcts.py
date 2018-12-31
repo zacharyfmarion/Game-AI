@@ -5,6 +5,7 @@ from tqdm import tqdm
 from gameai.core import Algorithm
 
 DEFAULT_C_PUNT = 1.4
+EPSILON = 1e-8
 
 
 class MCTS(Algorithm):
@@ -27,7 +28,7 @@ class MCTS(Algorithm):
         self.wins = {}
         self.plays = {}
 
-    def search(self, g, num_iters=100, verbose=False, nnet=None, c_punt=DEFAULT_C_PUNT):
+    def search(self, g, s, p, num_iters=100, verbose=False, nnet=None, c_punt=DEFAULT_C_PUNT):
         '''
         Play out a certain number of games, each time updating our win and play
         counts for any state that we visit during the game. As we continue to
@@ -36,31 +37,28 @@ class MCTS(Algorithm):
 
         Args:
             g (Game): Game to train on
+            s (Game): The state to start the search in
+            p (int): The current player
             num_iters (int): Number of search iterations
             verbose (bool): Whether or not to render a progress bar
             nnet (Network): Optional nework to be used for the policy instead
                 of a naive random playout
             c_punt (float): The degree of exploration. Defaults to 1.4
+
+        Returns:
+            list: List of examples where each entry is of the format
+                :code:`[state_hash, action, reward]`
         '''
         iter_wrapper = tqdm if verbose else lambda x: x
+        examples = []
         for _ in iter_wrapper(range(num_iters)):
-            self.execute_episode(g, nnet=nnet, c_punt=c_punt)
+            iter_examples = self.search_episode(
+                g, s, p, nnet=nnet, c_punt=c_punt)
+            self.update(iter_examples)
+            examples += iter_examples
+        return examples
 
-    def execute_episode(self, g, nnet=None, c_punt=DEFAULT_C_PUNT):
-        '''
-        Execute a single iteration of the search and update the internal state
-        based on the generated examples
-
-        Args:
-            g (Game): The game
-            nnet (Network): Optional nework to be used for the policy instead
-                of a naive random playout
-            c_punt (float): The degree of exploration. Defaults to 1.4
-        '''
-        examples = self.search_episode(g, nnet=nnet, c_punt=c_punt)
-        self.update(examples)
-
-    def search_episode(self, g, nnet=None, c_punt=DEFAULT_C_PUNT):
+    def search_episode(self, g, s, p, nnet=None, c_punt=DEFAULT_C_PUNT):
         '''
         We play a game by starting in the boards starting state and then
         choosing a random move. We then move to the next state, keeping
@@ -70,6 +68,8 @@ class MCTS(Algorithm):
 
         Args:
             g (Game): Game to search
+            s (any): The state to start on
+            p (int): The current player
             nnet (Network): Optional nework to be used for the policy instead
                 of a naive random playout
             c_punt (float): The degree of exploration. Defaults to 1.4
@@ -78,13 +78,11 @@ class MCTS(Algorithm):
             list: List of examples where each entry is of the format
                 :code:`[state_hash, action, reward]`
         '''
-        s = g.initial_state()
-        p = 0
         examples = []
         while True:
-            # Update visited with the next state
             a, expand = self.monte_carlo_action(g, s, nnet, c_punt)
-            examples.append([g.to_hash(s), a, None])
+            s_hash = g.to_hash(s)
+            examples.append([s_hash, a, None])
             s = g.next_state(s, a, p)
             p = 1 - p
 
@@ -95,12 +93,12 @@ class MCTS(Algorithm):
             if expand:
                 # Do a random playout until we reach a terminal state. If a network
                 # is provided we instead use it's predicted outcome
-                winner = None
+                reward = None
                 if nnet:
-                    _, winner = nnet.predict_single(s)
+                    _, reward = nnet.predict_single(s)
                 else:
-                    winner = self.random_playout(g, s, p)
-                examples = self.assign_rewards(examples, winner)
+                    reward = self.random_playout(g, s, p)
+                examples = self.assign_rewards(examples, reward)
                 return examples
 
     def monte_carlo_action(self, g, s, nnet, c_punt):
@@ -122,37 +120,32 @@ class MCTS(Algorithm):
         '''
         actions = g.action_space(s)
         s_hash = g.to_hash(s)
-        expand = False
 
-        # Stop out early if there is only one choice
         if len(actions) == 1:
-            return actions[0], False
+            return (actions[0], False)
 
-        best_move = None
-
-        # We first check that this player has been in each of the subsequent states
-        # If they have not, then we simply choose a random action
-        if all((s_hash, a) in self.plays for a in actions):
-
-            log_total = math.log(
-                sum(self.plays[(s_hash, a)] for a in actions))
-            values = [
-                (self.wins[(s_hash, a)] / self.plays[(s_hash, a)]) +
-                c_punt * math.sqrt(log_total / self.plays[(s_hash, a)])
-                for a in actions
-            ]
-
-            next_move_index = values.index(max(values))
-            best_move = actions[next_move_index]
-        else:
+        # If we tried all actions in the state then we begin expansion
+        if not all((s_hash, a) in self.plays for a in actions):
             if nnet:
                 policy, _ = nnet.predict_single(s)
-                best_move = policy.indexOf(max(policy))
+                return (policy.argmax(), True)
             else:
-                best_move = choice(actions)
-            expand = True
+                return (choice(actions), True)
 
-        return (best_move, expand)
+        best_move = 0
+        best_ubc = -float('inf')
+        log_total = math.log(sum(self.plays[(s_hash, a)] for a in actions))
+
+        for a in actions:
+            wins = self.wins[(s_hash, a)]
+            plays = self.plays[(s_hash, a)]
+            q_value = wins / float(plays)
+            ubc = q_value + c_punt * math.sqrt(log_total / plays)
+            if ubc > best_ubc:
+                best_ubc = ubc
+                best_move = a
+
+        return (best_move, False)
 
     def policy(self, g, s, temp=1):
         '''
@@ -175,10 +168,14 @@ class MCTS(Algorithm):
             [0, 0.2, 0, 0.5, 0, 0, 0.3, 0, 0]
         '''
         s_hash = g.to_hash(s)
-        counts = [self.wins[s_hash, a] if (
+
+        print("WINS:", self.wins)
+        print("PLAYS:", self.plays)
+
+        counts = [self.wins[(s_hash, a)] / self.plays[(s_hash, a)] if (
             s_hash, a) in self.wins else 0 for a in range(g.total_action_space_size)]
 
-        if (sum(counts) == 0):
+        if sum(counts) == 0:
             raise ValueError('Cannot call policy before searching')
 
         # One hot encode
@@ -221,19 +218,13 @@ class MCTS(Algorithm):
         if len(actions) == 1:
             return actions[0]
 
-        best_move = None
+        if not all((s_hash, a) in self.plays for a in actions):
+            return choice(actions)
 
-        # We first check that this player has been in each of the subsequent states
-        # If they have not, then we simply choose a random action
-        if all((s_hash, a) in self.plays for a in actions):
-            q_values = [self.wins[(s_hash, a)] / self.plays[(s_hash, a)]
-                        for a in actions]
-            best_move_index = q_values.index(max(q_values))
-            best_move = actions[best_move_index]
-        else:
-            best_move = choice(actions)
-
-        return best_move
+        q_values = [self.wins[(s_hash, a)] / self.plays[(s_hash, a)]
+                    if (s_hash, a) in self.plays else 0 for a in actions]
+        best_move_index = q_values.index(max(q_values))
+        return actions[best_move_index]
 
     @staticmethod
     def random_playout(g, s, p, max_moves=1000):
