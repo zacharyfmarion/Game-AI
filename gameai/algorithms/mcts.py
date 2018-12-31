@@ -28,6 +28,21 @@ class MCTS(Algorithm):
         self.wins = {}
         self.plays = {}
 
+    def get_untried_actions(self, g, s):
+        '''
+        Get all the moves that have not been tried yet
+
+        Args:
+            g (Game): The game
+            s (any): The state of the game
+
+        Returns:
+            list: A list of actions
+        '''
+        actions = g.action_space(s)
+        s_hash = g.to_hash(s)
+        return [a for a in actions if (s_hash, a) not in self.plays]
+
     def search(self, g, s, p, num_iters=100, verbose=False, nnet=None, c_punt=DEFAULT_C_PUNT):
         '''
         Play out a certain number of games, each time updating our win and play
@@ -119,20 +134,20 @@ class MCTS(Algorithm):
                 whether or not the expansion phase has begun
         '''
         actions = g.action_space(s)
+        untried_actions = self.get_untried_actions(g, s)
         s_hash = g.to_hash(s)
 
         if len(actions) == 1:
             return (actions[0], False)
 
-        # If we tried all actions in the state then we begin expansion
-        if not all((s_hash, a) in self.plays for a in actions):
+        if untried_actions != []:
             if nnet:
                 policy, _ = nnet.predict_single(s)
                 return (policy.argmax(), True)
             else:
-                return (choice(actions), True)
+                return (choice(untried_actions), True)
 
-        best_move = 0
+        best_move = None
         best_ubc = -float('inf')
         log_total = math.log(sum(self.plays[(s_hash, a)] for a in actions))
 
@@ -212,13 +227,14 @@ class MCTS(Algorithm):
             int: The best action given the current knowledge of the game
         '''
         actions = g.action_space(s)
+        untried_actions = self.get_untried_actions(g, s)
         s_hash = g.to_hash(s)
 
         # Stop out early if there is only one choice
         if len(actions) == 1:
             return actions[0]
 
-        if not all((s_hash, a) in self.plays for a in actions):
+        if untried_actions != []:
             return choice(actions)
 
         q_values = [self.wins[(s_hash, a)] / self.plays[(s_hash, a)]
