@@ -3,12 +3,6 @@ Core
 
 Core contains the primitives for playing a game between two players.
 
-.. autoclass:: core.Player
-    :members:
-
-.. autoclass:: core.Arena
-    :members:
-
 .. autoclass:: core.Game
     :members:
 
@@ -21,4 +15,7 @@ Note: There are two types of agents, agents that are trainable and agents that a
     :members:
     
 .. autoclass:: core.Algorithm
+    :members:
+    
+.. autoclass:: core.Arena
     :members:
