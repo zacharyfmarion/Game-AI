@@ -1,4 +1,3 @@
-from copy import deepcopy
 from random import shuffle
 from tqdm import tqdm
 import numpy as np
@@ -13,10 +12,13 @@ class AlphaZeroAgent(TrainableAgent):
 
     Attributes:
         nnet (Network): The backing neural network for the agent
+        network_generator (lambda): function with the signiature :code:`lambda weights: (method body)`
+            that generates a network to be used in the agent
     '''
 
-    def __init__(self, nnet):
-        self.nnet = nnet
+    def __init__(self, network_generator):
+        self.nnet = network_generator()
+        self.network_generator = network_generator
 
     def train(self, g, **kwargs):
         '''
@@ -24,18 +26,21 @@ class AlphaZeroAgent(TrainableAgent):
         '''
         num_iters = kwargs.get('num_iters', 100)
         verbose = kwargs.get('verbose', False)
-        num_episodes = kwargs.get('num_episodes', 100)
+        num_episodes = kwargs.get('num_episodes', 10)
         win_threshold = kwargs.get('win_threshold', .55)
 #
         examples = []
         iter_wrapper = tqdm if verbose else lambda x: x
 
         for _ in iter_wrapper(range(num_iters)):
-            for _ in range(num_episodes):
+            for episode in range(num_episodes):
+                if verbose:
+                    print('EPISODE: {}'.format(episode))
                 examples += self.train_episode(g, **kwargs)
 
             new_nnet = self.copy_and_train(self.nnet, examples)
-            win_percentage = self.pit_networks(g, new_nnet, self.nnet)
+            win_percentage = self.pit_networks(
+                g, new_nnet, self.nnet, verbose=verbose)
             if win_percentage >= win_threshold:
                 self.nnet = new_nnet
 
@@ -50,7 +55,7 @@ class AlphaZeroAgent(TrainableAgent):
         s = g.initial_state()
         mcts = MCTS()
         examples = []
-        while True:
+        while not g.terminal(s):
             mcts.search(g, s, p, num_iters=num_simulations, nnet=self.nnet)
             policy = mcts.policy(g, s)
             examples.append([s, policy, None])
@@ -58,18 +63,17 @@ class AlphaZeroAgent(TrainableAgent):
             s = g.next_state(s, a, p)
             p = 1 - p
 
-            if g.terminal(s):
-                examples = self.assign_rewards(examples, g.winner(s))
-                return examples
+        examples = self.assign_rewards(examples, g.reward(s, p))
+        return examples
 
     def training_params(self, g):
         return self.nnet
 
-    def action(self, _g, s, _p):
-        return self.nnet.predict_single(s)
+    def action(self, g, s, _p):
+        policy, _ = self.nnet.predict_single(s)
+        return self.get_best_valid_action(g, s, policy)
 
-    @staticmethod
-    def copy_and_train(nnet, examples):
+    def copy_and_train(self, nnet, examples):
         '''
         Return a copy of the passed in network, and train that copy
         on the examples given
@@ -81,12 +85,12 @@ class AlphaZeroAgent(TrainableAgent):
         Returns:
             Network: The network copy
         '''
-        new_nnet = deepcopy(nnet)
+        weights = nnet.weights()
+        new_nnet = self.network_generator(weights)
         new_nnet.train(examples)
         return new_nnet
 
-    @staticmethod
-    def pit_networks(g, new_nnet, old_nnet, num_games=50):
+    def pit_networks(self, g, new_nnet, old_nnet, num_games=50, verbose=False):
         '''
         Pit two networks against eachother in a game
 
@@ -95,30 +99,59 @@ class AlphaZeroAgent(TrainableAgent):
             new_nnet (Network): The network trained on the latest examples
             old_nnet (Network): The previous best network
             num_games (int): The number of games to play
+            verbose (bool): Whether or not to print output of game progress
 
         Returns:
             float: The win percentage of the new network
         '''
         num_wins = 0
-        for _ in range(num_games):
+        iter_wrapper = tqdm if verbose else lambda x: x
+        if verbose:
+            print('Pitting networks:\n')
+        for _ in iter_wrapper(range(num_games)):
             s = g.initial_state()
             nets = [new_nnet, old_nnet]
             shuffle(nets)
 
             p = 0
             while not g.terminal(s):
-                a, _ = nets[p].predict_single(s)
+                policy, _ = nets[p].predict_single(s)
+                a = self.get_best_valid_action(g, s, policy)
                 s = g.next_state(s, a, p)
                 p = 1 - p
 
             if nets.index(new_nnet) == g.winner(s):
                 num_wins += 1
 
-        return num_wins / float(num_games)
+        win_percentage = num_wins / float(num_games)
+        if verbose:
+            print('New net win percentage: {}%'.format(
+                win_percentage*100))
+
+        return win_percentage
 
     @staticmethod
-    def assign_rewards(examples, winner):
+    def get_best_valid_action(g, s, policy):
+        '''
+        Given a state and a policy returned from the network, return the
+        best valid action
+
+        Args:
+            g (Game): The game
+            s (list): The current state
+            poliy (list): The policy returned from the network
+
+        Returns:
+            int: The best valid action
+        '''
+        valid_actions = g.action_space(s)
+        valid_policy = [
+            policy[i] if i in valid_actions else 0 for i in range(len(policy))]
+        return np.argmax(valid_policy)
+
+    @staticmethod
+    def assign_rewards(examples, reward):
         '''
         TODO
         '''
-        return [[s, policy, 1 if winner == 0 else 0] for [s, policy, _] in examples]
+        return [[s, policy, reward] for [s, policy, _] in examples]

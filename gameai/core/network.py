@@ -33,3 +33,9 @@ class Network:
             any: The output of the network
         '''
         raise NotImplementedError
+
+    def weights(self):
+        '''
+        Return the network weights
+        '''
+        raise NotImplementedError

@@ -87,6 +87,7 @@ class Arena:
             int: The winner of the game
         '''
         state = self.game.initial_state()
+        # TODO REMOVE THIS
         # starting_player = choice([p.player_id for p in self.players])
         starting_player = 0
         player = starting_player

@@ -207,15 +207,16 @@ class MCTS(Algorithm):
             9
             >>> g.action_space()
             [1,3,6]
-            >>> mcts.pi(g, s, temp=1)
+            >>> mcts.policy(g, s, temp=1)
             [0, 0.2, 0, 0.5, 0, 0, 0.3, 0, 0]
         '''
         s_hash = g.to_hash(s)
+        action_space_size = g.total_action_space_size
         counts = [self.wins[(s_hash, a)] / self.plays[(s_hash, a)] if (
-            s_hash, a) in self.wins else 0 for a in range(g.total_action_space_size)]
+            s_hash, a) in self.wins else 0 for a in range(action_space_size)]
 
         if sum(counts) == 0:
-            raise ValueError('Cannot call policy before searching')
+            return [1 / float(action_space_size) for i in range(action_space_size)]
 
         # One hot encode
         if temp == 0:
