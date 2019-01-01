@@ -1,6 +1,6 @@
-from random import choice
+from random import shuffle
 
-from .player import Player
+from .agent import Agent
 
 
 class Arena:
@@ -10,30 +10,20 @@ class Arena:
 
     Attributes:
         game (Game): The game that is being played
-        players (list): List of Player objects. Note that there should only be two, and
-            the ids of the player should map to the index of the player in the array.
+        agents (list): List of Agent objects. Note that there should only be two
         games_played (int): The number of games played in the arena
         wins (list): List of two integers representing the number of wins of each player,
             with the index being the id of the player
     '''
 
-    def __init__(self, game, players):
-        '''
-        Note:
-            The `players` argument is a list of players to be used. In the future, when
-            more than two players are supported this can be generalized to n players.
-
-        Args:
-            game (Game)
-            players (list)
-        '''
-        if not all(isinstance(p, Player) for p in players):
+    def __init__(self, game, agents):
+        if not all(isinstance(agent, Agent) for agent in agents):
             raise ValueError('Expected `model` argument to be a list of '
-                             '`Player` instances, got ', players)
-        if len(players) != 2:
+                             '`Agent` instances, got ', agents)
+        if len(agents) != 2:
             raise ValueError('There should be two players in every game')
         self.game = game
-        self.players = players
+        self.agents = agents
         self.games_played = 0
         self.wins = [0, 0]
 
@@ -49,6 +39,7 @@ class Arena:
         '''
         num_episodes = kwargs.get('num_episodes', 10)
         verbose = kwargs.get('verbose', False)
+
         for _ in range(num_episodes):
             self.play_game(verbose)
 
@@ -59,7 +50,7 @@ class Arena:
         if self.games_played == 0:
             raise ZeroDivisionError(
                 'At least one game must be played before statistics can be generated')
-        for i in range(len(self.players)):
+        for i in range(len(self.agents)):
             print('Player {}: \n  - Games: {} / {}\n  - Percentage: {}%'.format(
                 i,
                 self.wins[i],
@@ -73,11 +64,9 @@ class Arena:
         accurate statistics and returning the winner (or -1 if no winner).
 
         Note:
-            We always have the start with player being 0 from the persepctive
-            of the agent. Because of this we pass in a :code:`flip` boolean to
-            the player class in the action method, which flips the board and
-            makes it seems as though player 0 started, even if it was actually
-            player 1
+            We always have the start with player being 0 from the persective
+            of the agent. Because of this we flips the board for the agent going
+            second and make it seems as though the agent started
 
         Args:
             verbose (bool): Whether or not to print the output of the game.
@@ -86,28 +75,29 @@ class Arena:
         Returns:
             int: The winner of the game
         '''
-        state = self.game.initial_state()
-        # TODO REMOVE THIS
-        # starting_player = choice([p.player_id for p in self.players])
-        starting_player = 0
-        player = starting_player
+        agents = self.agents.copy()
+        shuffle(agents)
+
+        p = 0
+        g = self.game
+        s = g.initial_state()
 
         if verbose:
-            print("Player {} going first".format(player))
+            print("Agent {} going first".format(self.agents.index(agents[0])))
 
         # Play out the full game
-        while not self.game.terminal(state):
-            action = self.players[player].action(
-                self.game, state, starting_player != 0)
-            state = self.game.next_state(state, action, player)
-            player = 1 - player
+        while not g.terminal(s):
+            a = agents[p].action(g, s, p)
+            s = g.next_state(s, a, p)
+            p = 1 - p
             if verbose:
-                print(self.game.to_readable_string(state), "\n")
+                print(g.to_readable_string(s), "\n")
 
         self.games_played += 1
-        winner = self.game.winner(state)
+        winner = g.winner(s)
 
-        if winner in [p.player_id for p in self.players]:
-            self.wins[winner] += 1
+        if winner in [0, 1]:
+            winning_agent = self.agents.index(agents[winner])
+            self.wins[winning_agent] += 1
 
         return winner

@@ -4,6 +4,7 @@ import numpy as np
 
 from gameai.core import TrainableAgent
 from gameai.algorithms import MCTS
+from gameai.utils import mask_policy
 
 
 class AlphaZeroAgent(TrainableAgent):
@@ -69,7 +70,7 @@ class AlphaZeroAgent(TrainableAgent):
     def training_params(self, g):
         return self.nnet
 
-    def action(self, g, s, _p):
+    def action(self, g, s, _):
         policy, _ = self.nnet.predict_single(s)
         return self.get_best_valid_action(g, s, policy)
 
@@ -115,7 +116,8 @@ class AlphaZeroAgent(TrainableAgent):
 
             p = 0
             while not g.terminal(s):
-                policy, _ = nets[p].predict_single(s)
+                state = s if p == 0 else g.flip_state(s)
+                policy, _ = nets[p].predict_single(state)
                 a = self.get_best_valid_action(g, s, policy)
                 s = g.next_state(s, a, p)
                 p = 1 - p
@@ -145,8 +147,7 @@ class AlphaZeroAgent(TrainableAgent):
             int: The best valid action
         '''
         valid_actions = g.action_space(s)
-        valid_policy = [
-            policy[i] if i in valid_actions else 0 for i in range(len(policy))]
+        valid_policy = mask_policy(policy, valid_actions)
         return np.argmax(valid_policy)
 
     @staticmethod

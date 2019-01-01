@@ -1,8 +1,10 @@
 import math
 from random import choice
 from tqdm import tqdm
+import numpy as np
 
 from gameai.core import Algorithm
+from gameai.utils import mask_policy
 
 DEFAULT_C_PUNT = 1.4
 EPSILON = 1e-8
@@ -17,16 +19,16 @@ class MCTS(Algorithm):
     the best move based on this stored information
 
     Attributes:
-        wins (dict): A dictionary where the key is a tuple :code:`(player, state_hash)`
-            and the value is the number of wins that occurred at that state for the
-            player. Note that the player represents whoever *played* the move in the state.
-        plays (dict): A dictionary of the same format as wins which represents the
+        Q (dict): A dictionary where the key is a tuple :code:`(state_hash, action)`
+            and the value is the q_value.
+        N (dict): A dictionary of the same format as wins which represents the
             number of times the player made a move in the given state
     '''
 
     def __init__(self):
-        self.wins = {}
-        self.plays = {}
+        self.Q = {}        # Q value of a (state, action) pair
+        self.N = {}        # Number of times a (state, action) pair was visited
+        self.Ns = {}       # Total number of times a state was visited
 
     def get_untried_actions(self, g, s):
         '''
@@ -41,13 +43,13 @@ class MCTS(Algorithm):
         '''
         actions = g.action_space(s)
         s_hash = g.to_hash(s)
-        return [a for a in actions if (s_hash, a) not in self.plays]
+        return [a for a in actions if (s_hash, a) not in self.N]
 
     def search(self, g, s, p, num_iters=100, verbose=False, nnet=None, c_punt=DEFAULT_C_PUNT):
         '''
         Play out a certain number of games, each time updating our win and play
         counts for any state that we visit during the game. As we continue to
-        play, num_wins / num_plays for a given state should begin to converge on
+        play, the q_value for a given state should begin to converge on
         the true optimality of a state
 
         Args:
@@ -97,12 +99,12 @@ class MCTS(Algorithm):
         while True:
             a, expand = self.monte_carlo_action(g, s, nnet, c_punt)
             s_hash = g.to_hash(s)
-            examples.append([s_hash, a, None])
+            examples.append([s_hash, a, p])
             s = g.next_state(s, a, p)
             p = 1 - p
 
             if g.terminal(s):
-                examples = self.assign_rewards(examples, g.reward(s, 0))
+                examples = self.assign_rewards(examples, g.reward(s, p), p)
                 return examples
 
             # Do a random playout until we reach a terminal state. If a network
@@ -113,7 +115,7 @@ class MCTS(Algorithm):
                     _, reward = nnet.predict_single(s)
                 else:
                     reward = self.random_playout(g, s, p)
-                examples = self.assign_rewards(examples, reward)
+                examples = self.assign_rewards(examples, reward, p)
                 return examples
 
     def monte_carlo_action(self, g, s, nnet, c_punt):
@@ -125,7 +127,6 @@ class MCTS(Algorithm):
         Args:
             g (Game): The game
             s (any): The state of the game
-            p (int): The player who is about to make a move
             nnet (Network): A network that serves as the default policy
             c_punt (float): The degree of exploration
 
@@ -143,18 +144,17 @@ class MCTS(Algorithm):
         if untried_actions != []:
             if nnet:
                 policy, _ = nnet.predict_single(s)
-                return (policy.argmax(), True)
-            else:
-                return (choice(untried_actions), True)
+                valid_policy = mask_policy(policy, actions)
+                return (valid_policy.argmax(), True)
+            return (choice(untried_actions), True)
 
         best_move = None
         best_ubc = -float('inf')
-        log_total = math.log(sum(self.plays[(s_hash, a)] for a in actions))
+        log_total = math.log(sum(self.N[(s_hash, a)] for a in actions))
 
         for a in actions:
-            wins = self.wins[(s_hash, a)]
-            plays = self.plays[(s_hash, a)]
-            q_value = wins / float(plays)
+            plays = self.N[(s_hash, a)]
+            q_value = self.Q[(s_hash, a)]
             ubc = q_value + c_punt * math.sqrt(log_total / plays)
             if ubc > best_ubc:
                 best_ubc = ubc
@@ -162,14 +162,13 @@ class MCTS(Algorithm):
 
         return (best_move, False)
 
-    def best_action(self, g, s, _):
+    def best_action(self, g, s, p):
         '''
         Get the best action for a given player in a given game state
 
         Args:
             g (Game): The game
             s (state): The current state of the game
-            p (int): The current player
 
         Returns:
             int: The best action given the current knowledge of the game
@@ -185,9 +184,7 @@ class MCTS(Algorithm):
         if untried_actions != []:
             return choice(actions)
 
-        q_values = [self.wins[(s_hash, a)] / self.plays[(s_hash, a)]
-                    for a in actions]
-        best_move_index = q_values.index(max(q_values))
+        best_move_index = np.argmax([self.Q[(s_hash, a)] for a in actions])
         return actions[best_move_index]
 
     def policy(self, g, s, temp=1):
@@ -212,8 +209,7 @@ class MCTS(Algorithm):
         '''
         s_hash = g.to_hash(s)
         action_space_size = g.total_action_space_size
-        counts = [self.wins[(s_hash, a)] / self.plays[(s_hash, a)] if (
-            s_hash, a) in self.wins else 0 for a in range(action_space_size)]
+        counts = [self.Q.get((s_hash, a), 0) for a in range(action_space_size)]
 
         if sum(counts) == 0:
             return [1 / float(action_space_size) for i in range(action_space_size)]
@@ -236,9 +232,13 @@ class MCTS(Algorithm):
                 :code:`[player, state_hash, reward]`
         '''
         for [s, a, reward] in examples:
-            self.plays[(s, a)] = self.plays.get((s, a), 0) + 1
-            self.wins[(s, a)] = self.wins.get(
-                (s, a), 0) + (1 if reward > 0 else 0)
+            if (s, a) in self.Q:
+                self.Q[(s, a)] = (self.N[(s, a)] *
+                                  self.Q[(s, a)] + reward)/(self.N[(s, a)] + 1)
+                self.N[(s, a)] = self.N[(s, a)] + 1
+            else:
+                self.Q[(s, a)] = reward
+                self.N[(s, a)] = 1
 
     @staticmethod
     def random_playout(g, s, p):
@@ -252,27 +252,35 @@ class MCTS(Algorithm):
             max_moves (int): Maximum number of moves before the function exits
 
         Returns:
-            int: The reward of the game from the perspective of player 0
+            int: The reward of the game from the perspective of the player that 
+                the playout started from (passed as p in the param)
         '''
+        starting_player = p
         while True:
             a = choice(g.action_space(s))
             s = g.next_state(s, a, p)
             p = 1 - p
             if g.terminal(s):
-                return g.reward(s, 0)
+                return g.reward(s, starting_player)
 
     @staticmethod
-    def assign_rewards(examples, reward):
+    def assign_rewards(examples, reward, p):
         '''
-        Assign rewards to the examples after the outcome is known. Note that this
-        is always from the perspective of the starting player (0)
+        Assign rewards to the examples after the outcome is known.
+
+        Note:
+            We always assign the reward from the perspective of the player that played
+            the move.
 
         Args:
             examples (list): List of examples where each entry is of the format
-                :code:`[state_hash, action, None]`
-            reward (int): The reward from the perspective of player 0
+                :code:`[state_hash, action, player]`
+            reward (int): The reward from the perspective of the player that the simulation
+                started from (passed in as the last param)
+            p (int): The player that the simulation started from (which the reward is
+                associated with)
 
         Returns:
             list: List in the format :code:`[state_hash, action, reward]`
         '''
-        return [[s_hash, a, reward] for [s_hash, a, _] in examples]
+        return [[s_hash, a, reward if curr == p else -reward] for [s_hash, a, curr] in examples]
