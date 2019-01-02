@@ -11,17 +11,17 @@ class BasicConvNet(Network):
 
      Attributes:
         input_shape (tuple): Shape of the input
-        policy_dims (int): Shape of the policy output
+        policy_size (int): Shape of the policy output
         num_layers (int): Number of convolutional layers in the network
         model (tf.keras.Model): Keras model
 
     Examples:
-        >>> BasicConvNet(input_shape=(3,3,1), policy_dims=(9,), num_layers=1)
+        >>> BasicConvNet(input_shape=(3,3,1), policy_size=(9,), num_layers=1)
     '''
 
-    def __init__(self, weights=None, input_shape=None, policy_dims=None, num_layers=3):
+    def __init__(self, weights=None, input_shape=None, policy_size=None, num_layers=3):
         self.input_shape = input_shape
-        self.policy_dims = policy_dims
+        self.policy_size = policy_size
         self.num_layers = num_layers
 
         input_layer = Input(shape=input_shape)
@@ -32,7 +32,7 @@ class BasicConvNet(Network):
         flatten = Flatten()(layer)
         dense1 = Dense(10)(flatten)
         dense2 = Dense(10)(dense1)
-        policy = Dense(policy_dims, activation='softmax')(dense2)
+        policy = Dense(policy_size, activation='softmax')(dense2)
         reward = Dense(1, activation="tanh")(dense2)
 
         self.model = Model(inputs=input_layer, outputs=[policy, reward])
@@ -67,12 +67,13 @@ class BasicConvNet(Network):
     def predict(self, inputs, **kwargs):
         input_shape = list(self.input_shape)
         input_shape.insert(0, -1)
-        return tuple(self.model.predict(np.array(inputs).reshape(tuple(input_shape))))
+        reshaped_inputs = np.array(inputs).reshape(tuple(input_shape))
+        return tuple(self.model.predict(reshaped_inputs))
 
     def predict_single(self, x, **kwargs):
         policies, rewards = self.predict(
             np.expand_dims(np.array(x), 1), **kwargs)
-        return (policies[0], rewards[0])
+        return (policies[0], rewards[0][0])
 
     def weights(self):
         return self.model.get_weights()

@@ -1,4 +1,3 @@
-from random import shuffle
 from tqdm import tqdm
 import numpy as np
 
@@ -25,15 +24,15 @@ class AlphaZeroAgent(TrainableAgent):
         '''
         Train the agent for a certain number of iterations
         '''
-        num_iters = kwargs.get('num_iters', 100)
+        num_iters = kwargs.get('num_iters', 10)
         verbose = kwargs.get('verbose', False)
-        num_episodes = kwargs.get('num_episodes', 10)
+        num_episodes = kwargs.get('num_episodes', 500)
         win_threshold = kwargs.get('win_threshold', .55)
-#
-        examples = []
-        iter_wrapper = tqdm if verbose else lambda x: x
 
-        for _ in iter_wrapper(range(num_iters)):
+        examples = []
+        for iteration in range(num_iters):
+            if verbose:
+                print("\n> ITERATION: {}\n===============".format(iteration))
             for episode in range(num_episodes):
                 if verbose:
                     print('EPISODE: {}'.format(episode))
@@ -59,12 +58,12 @@ class AlphaZeroAgent(TrainableAgent):
         while not g.terminal(s):
             mcts.search(g, s, p, num_iters=num_simulations, nnet=self.nnet)
             policy = mcts.policy(g, s)
-            examples.append([s, policy, None])
+            examples.append([s, policy, p])
             a = np.random.choice(len(policy), p=policy)
             s = g.next_state(s, a, p)
             p = 1 - p
 
-        examples = self.assign_rewards(examples, g.reward(s, p))
+        examples = self.assign_rewards(g, examples)
         return examples
 
     def training_params(self, g):
@@ -93,7 +92,8 @@ class AlphaZeroAgent(TrainableAgent):
 
     def pit_networks(self, g, new_nnet, old_nnet, num_games=50, verbose=False):
         '''
-        Pit two networks against eachother in a game
+        Pit two networks against eachother in a game. Each network starts the game
+        50% of the time to ensure a fair match
 
         Args:
             g (Game): The game the networks are playing
@@ -109,18 +109,22 @@ class AlphaZeroAgent(TrainableAgent):
         iter_wrapper = tqdm if verbose else lambda x: x
         if verbose:
             print('Pitting networks:\n')
-        for _ in iter_wrapper(range(num_games)):
+        for i in iter_wrapper(range(num_games)):
+            # print('{} net starting'.format("new" if i % 2 == 0 else "old"))
             s = g.initial_state()
-            nets = [new_nnet, old_nnet]
-            shuffle(nets)
+            nets = [new_nnet, old_nnet] if i % 2 == 0 else [old_nnet, new_nnet]
 
             p = 0
             while not g.terminal(s):
-                state = s if p == 0 else g.flip_state(s)
-                policy, _ = nets[p].predict_single(state)
+                policy, _ = nets[p].predict_single(s)
                 a = self.get_best_valid_action(g, s, policy)
                 s = g.next_state(s, a, p)
+                # print(p, a)
+                # print(g.to_readable_string(s))
                 p = 1 - p
+
+            # print('{} net wins'.format("new" if nets.index(
+            #     new_nnet) == g.winner(s) else "old"))
 
             if nets.index(new_nnet) == g.winner(s):
                 num_wins += 1
@@ -148,11 +152,23 @@ class AlphaZeroAgent(TrainableAgent):
         '''
         valid_actions = g.action_space(s)
         valid_policy = mask_policy(policy, valid_actions)
-        return np.argmax(valid_policy)
+        return np.random.choice(len(valid_policy), p=valid_policy)
 
     @staticmethod
-    def assign_rewards(examples, reward):
+    def assign_rewards(g, examples):
         '''
-        TODO
+        Assign rewards to the examples after the outcome is known.
+
+        Note:
+            We always assign the reward from the perspective of the player that played
+            the move.
+
+        Args:
+            g (Game): The game, used to get the reward
+            examples (list): List of examples where each entry is of the format
+                :code:`[state_hash, policy, player]`
+
+        Returns:
+            list: List in the format :code:`[state_hash, policy, reward]`
         '''
-        return [[s, policy, reward] for [s, policy, _] in examples]
+        return [[s, policy, g.reward(s, p)] for [s, policy, p] in examples]

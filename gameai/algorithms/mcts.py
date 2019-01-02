@@ -145,7 +145,7 @@ class MCTS(Algorithm):
             if nnet:
                 policy, _ = nnet.predict_single(s)
                 valid_policy = mask_policy(policy, actions)
-                return (valid_policy.argmax(), True)
+                return (np.argmax(valid_policy), True)
             return (choice(untried_actions), True)
 
         best_move = None
@@ -208,16 +208,32 @@ class MCTS(Algorithm):
             [0, 0.2, 0, 0.5, 0, 0, 0.3, 0, 0]
         '''
         s_hash = g.to_hash(s)
+        actions = g.action_space(s)
         action_space_size = g.total_action_space_size
-        counts = [self.Q.get((s_hash, a), 0) for a in range(action_space_size)]
+
+        counts = [self.Q.get((s_hash, a), 0) if a in actions else 0 for a in range(
+            action_space_size)]
+
+        # hash_map = {}
+        # for i in [-1, 0, 1]:
+        #     for j in [-1, 0, 1]:
+        #         for k in [-1, 0, 1]:
+        #             hash_map[g.to_hash([i, j, k])] = [i, j, k]
+
+        # print('\nQ VALUES')
+        # print('STATE: {}, ACTIONS: {}'.format(s, actions))
+        # for (s_hash, a), v in self.Q.items():
+        #     print(hash_map[(s_hash)], a, v)
 
         if sum(counts) == 0:
-            return [1 / float(action_space_size) for i in range(action_space_size)]
+            print(
+                'No valid actions - please make sure you are using this method correctly')
+            return [1 / float(len(actions)) if a in actions else 0 for a in range(action_space_size)]
 
         # One hot encode
         if temp == 0:
             best_move = counts.index(max(counts))
-            return [1 if i == best_move else 0 for i in range(g.total_action_space_size)]
+            return [1 if i == best_move else 0 for i in range(action_space_size)]
 
         counts = [count**(1/temp) for count in counts]
         return [count/float(sum(counts)) for count in counts]
